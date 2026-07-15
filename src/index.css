@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-navy: #0b1e4d;
+  --color-brand-navy-light: #142c66;
+  --color-brand-red: #e4002b;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  background-color: #f3f4f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
