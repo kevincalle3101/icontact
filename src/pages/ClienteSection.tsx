@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import SectionContainer from '@/components/shared/SectionContainer';
 import Spinner from '@/components/shared/Spinner';
 import ErrorMessage from '@/components/shared/ErrorMessage';
-import BrandDropdown from '@/components/cliente/BrandDropdown';
 import DeliveryType from '@/components/cliente/DeliveryType';
 import OrderHistoryTable from '@/components/cliente/OrderHistoryTable';
 import CustomerForm, { type CustomerFormValues } from '@/components/cliente/CustomerForm';
@@ -14,14 +13,13 @@ import {
   saveCustomer,
   setDeliveryChannel,
 } from '@/store/slices/customerSlice';
-import type { Brand, OrderHistoryItem } from '@/types';
+import type { OrderHistoryItem } from '@/types';
 
 export default function ClienteSection() {
   const dispatch = useAppDispatch();
   const { customer, orderHistory, storeInfo, deliveryChannel, loading, error } = useAppSelector(
     (state) => state.customer,
   );
-  const [brand, setBrand] = useState<Brand>('KFC');
 
   useEffect(() => {
     dispatch(loadCustomerByPhone('970220065'));
@@ -45,7 +43,6 @@ export default function ClienteSection() {
     <SectionContainer
       title="1. Cliente"
       className="h-full"
-      actions={<BrandDropdown value={brand} onChange={setBrand} />}
     >
       <div className="flex flex-col gap-4">
         {loading && !customer && <Spinner label="Buscando cliente..." />}
