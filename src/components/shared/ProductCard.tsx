@@ -20,22 +20,27 @@ export default function ProductCard({ product, onAdd, compact = false }: Product
 
   return (
     <>
-      <article className="flex flex-col rounded-xl border border-slate-200/90 bg-white overflow-hidden shadow-2xs transition-all hover:shadow-md">
+      <article className="flex flex-col rounded-xl border border-slate-200/90 bg-white p-2.5 shadow-2xs transition-all hover:shadow-md justify-between min-h-[148px]">
+        {/* Soft Cream/Beige Image Container */}
         <div
-          className="flex h-24 items-center justify-center border-b border-amber-100/60 bg-[#fffbf5] text-4xl"
+          className="flex h-18 items-center justify-center rounded-lg bg-[#fff8f0] text-3xl shrink-0 mb-1.5"
           aria-hidden="true"
         >
           {product.emoji}
         </div>
-        <div className="flex flex-1 flex-col justify-between p-2.5">
+
+        {/* Text and Info Area */}
+        <div className="flex flex-1 flex-col justify-between">
           <div>
-            <h3 className="text-xs font-bold uppercase text-slate-800 leading-snug">
+            <h3 className="text-[11px] font-bold uppercase text-[#0b1021] leading-tight truncate">
               {product.name}
             </h3>
             {!compact && (
-              <p className="mt-1 text-[10px] text-slate-500 leading-tight">
-                {product.description}
-                {/* Requirement: Blue info icon for manager discount / details */}
+              <div className="mt-0.5 flex items-center justify-between gap-1">
+                <p className="text-[10px] text-slate-400 leading-tight truncate flex-1">
+                  {product.description}
+                </p>
+                {/* Requirement: Blue/Gray info icon for manager discount / details */}
                 <button
                   type="button"
                   onClick={(e) => {
@@ -43,22 +48,24 @@ export default function ProductCard({ product, onAdd, compact = false }: Product
                     setShowObsModal(true);
                   }}
                   title="Ver detalle / Observación cocina"
-                  className="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-xs bg-blue-500 text-[9px] font-bold text-white transition-opacity hover:opacity-80"
+                  className="inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-xs bg-[#64748b] text-[9px] font-bold text-white hover:opacity-80 transition-opacity"
                 >
                   i
                 </button>
-              </p>
+              </div>
             )}
           </div>
+
+          {/* Bottom Price & Add Button Row */}
           <div className="mt-2 flex items-center justify-between">
-            <span className="text-xs font-bold text-red-600">S/ {product.price.toFixed(2)}</span>
+            <span className="text-xs font-bold text-[#e4002b]">S/ {product.price.toFixed(2)}</span>
             <button
               type="button"
               onClick={() => onAdd(product)}
               aria-label={`Agregar ${product.name} al carrito`}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0f172a] text-white transition-colors hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0f172a]"
+              className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-[#0b1021] text-white transition-colors hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0b1021]"
             >
-              <FiPlus size={14} aria-hidden="true" />
+              <FiPlus size={13} aria-hidden="true" />
             </button>
           </div>
         </div>

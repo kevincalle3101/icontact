@@ -12,8 +12,8 @@ export default function OrderDeskLayout() {
         <ClienteSection />
       </div>
 
-      {/* Column 2: Section 2 (Carta - Productos) & Section 3 (Venta Sugestiva) */}
-      <div className="flex flex-col gap-2.5 h-full overflow-y-auto pr-1 scrollbar-thin">
+      {/* Column 2: Section 2 (Carta - Productos) & Section 3 (Venta Sugestiva) fitting 100% height */}
+      <div className="flex flex-col gap-2.5 h-full min-h-0 overflow-hidden">
         <ProductosSection />
         <SugerenciasSection />
       </div>

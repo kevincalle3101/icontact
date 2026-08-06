@@ -8,14 +8,14 @@ interface SuggestedProductsProps {
 
 export default function SuggestedProducts({ products, onAdd }: SuggestedProductsProps) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       {/* Left carousel arrow */}
       <button
         type="button"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50"
         title="Anterior"
       >
-        <FiChevronLeft size={16} />
+        <FiChevronLeft size={14} />
       </button>
 
       {/* Suggested products cards */}
@@ -23,22 +23,22 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
         {products.slice(0, 4).map((product, index) => (
           <article
             key={`${product.id}-${index}`}
-            className="flex flex-col items-center justify-between rounded-xl border border-slate-200 bg-white p-2.5 text-center shadow-2xs hover:shadow-xs transition-shadow"
+            className="flex flex-col items-center justify-between rounded-xl border border-slate-200/90 bg-white p-2 text-center shadow-2xs hover:shadow-xs transition-shadow"
           >
-            <div className="text-2xl mb-1" aria-hidden="true">
+            <div className="text-xl mb-0.5" aria-hidden="true">
               {product.emoji}
             </div>
             <div>
-              <h3 className="text-[11px] font-bold text-slate-800 leading-tight">
+              <h3 className="text-[10px] font-bold text-slate-800 leading-tight truncate max-w-[100px]">
                 {product.name}
               </h3>
-              <p className="text-[11px] font-bold text-slate-900 mt-0.5">
+              <p className="text-[10px] font-bold text-slate-900 mt-0.5">
                 + S/ {product.price.toFixed(2)}
               </p>
             </div>
 
             {/* Requirement: Blue info icon indicating manager discount applies */}
-            <div className="mt-1.5 flex items-center justify-center gap-2">
+            <div className="mt-1 flex items-center justify-center gap-1.5">
               <span
                 title="Aplica Descuento Gerencial"
                 className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-xs bg-blue-500 text-[9px] font-bold text-white"
@@ -49,9 +49,9 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
                 type="button"
                 onClick={() => onAdd(product)}
                 aria-label={`Agregar ${product.name} sugerido`}
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0f172a] text-white hover:bg-slate-800 transition-colors"
+                className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0f172a] text-white hover:bg-slate-800 transition-colors"
               >
-                <FiPlus size={12} aria-hidden="true" />
+                <FiPlus size={11} aria-hidden="true" />
               </button>
             </div>
           </article>
@@ -61,10 +61,10 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
       {/* Right carousel arrow */}
       <button
         type="button"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50"
         title="Siguiente"
       >
-        <FiChevronRight size={16} />
+        <FiChevronRight size={14} />
       </button>
     </div>
   );

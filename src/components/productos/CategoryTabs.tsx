@@ -12,7 +12,7 @@ export default function CategoryTabs({ categories, active, onSelect }: CategoryT
     <div
       role="tablist"
       aria-label="Categorías de productos"
-      className="flex flex-col gap-1 w-32 shrink-0 border-r border-slate-200 pr-2"
+      className="flex flex-col gap-1 w-28 sm:w-30 shrink-0 border-r border-slate-200/80 pr-1.5 overflow-y-auto max-h-full scrollbar-thin"
     >
       {categories.map((category) => (
         <button
@@ -22,10 +22,10 @@ export default function CategoryTabs({ categories, active, onSelect }: CategoryT
           aria-selected={category === active}
           onClick={() => onSelect(category)}
           className={clsx(
-            'w-full text-left rounded-lg px-3 py-2 text-xs font-semibold transition-colors',
+            'w-full text-left rounded-xl px-2.5 py-1 text-[11px] font-bold transition-all',
             category === active
-              ? 'bg-[#0f172a] text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+              ? 'bg-[#0b1021] text-white shadow-xs'
+              : 'text-[#475569] hover:bg-slate-100 hover:text-slate-900 font-semibold',
           )}
         >
           {category}

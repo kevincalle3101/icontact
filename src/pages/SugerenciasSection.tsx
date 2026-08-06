@@ -26,7 +26,8 @@ export default function SugerenciasSection() {
   return (
     <SectionContainer
       title="3. VENTA SUGESTIVA"
-      className="border border-slate-200 bg-white rounded-2xl shadow-xs"
+      className="shrink-0 border border-slate-200 bg-white rounded-2xl shadow-xs"
+      contentClassName="p-2.5"
     >
       {loading && suggested.length === 0 ? (
         <Spinner label="Cargando sugerencias..." />

@@ -51,9 +51,10 @@ export default function ProductosSection() {
   return (
     <SectionContainer
       title="2. CARTA - PRODUCTOS"
-      className="h-full border border-slate-200 bg-white rounded-2xl shadow-xs"
+      className="flex-1 flex flex-col min-h-0 border border-slate-200 bg-white rounded-2xl shadow-xs overflow-hidden"
+      contentClassName="flex-1 flex flex-col min-h-0 p-2.5 overflow-hidden"
     >
-      <div className="flex flex-col gap-3">
+      <div className="flex-1 flex flex-col min-h-0 gap-2 overflow-hidden">
         {/* Requirement: Full catalog search bar */}
         <SearchBar
           value={searchQuery}
@@ -61,7 +62,7 @@ export default function ProductosSection() {
           placeholder="Buscar en esta categoría..."
         />
 
-        <div className="flex items-start gap-3">
+        <div className="flex-1 flex min-h-0 gap-2 overflow-hidden">
           {/* Vertical category tabs on left side */}
           <CategoryTabs
             categories={PRODUCT_CATEGORIES}
@@ -73,7 +74,7 @@ export default function ProductosSection() {
           />
 
           {/* Product grid on right side */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
             {loading && <Spinner label="Cargando productos..." />}
             {error && !loading && (
               <ErrorMessage
@@ -81,7 +82,11 @@ export default function ProductosSection() {
                 onRetry={() => dispatch(loadProductsByCategory(activeCategory))}
               />
             )}
-            {!loading && !error && <ProductGrid products={productsToShow} onAdd={handleAdd} />}
+            {!loading && !error && (
+              <div className="flex-1 min-h-0 overflow-y-auto pr-1 scrollbar-thin">
+                <ProductGrid products={productsToShow} onAdd={handleAdd} />
+              </div>
+            )}
           </div>
         </div>
       </div>

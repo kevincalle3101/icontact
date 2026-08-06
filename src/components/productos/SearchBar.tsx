@@ -15,6 +15,7 @@ export default function SearchBar({
     <div className="relative">
       <FiSearch
         className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+        size={14}
         aria-hidden="true"
       />
       <input
@@ -23,7 +24,7 @@ export default function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label="Buscar productos"
-        className="w-full rounded-md border border-slate-300 py-2.5 pl-9 pr-3 text-sm focus:border-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-navy/30"
+        className="w-full rounded-xl border border-slate-300 py-1.5 pl-8 pr-3 text-xs focus:border-[#0b1021] focus:outline-none bg-slate-50/50"
       />
     </div>
   );
