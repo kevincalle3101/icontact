@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { fetchCustomerByPhone, fetchOrderHistory, updateCustomer } from '@/api/customerApi';
+import { fetchCustomerByPhone, updateCustomer } from '@/api/customerApi';
 import { MOCK_STORE_INFO } from '@/data/mockData';
 import type { Customer, DeliveryChannel, OrderHistoryItem, StoreInfo } from '@/types';
 
@@ -24,9 +24,8 @@ const initialState: CustomerState = {
 export const loadCustomerByPhone = createAsyncThunk(
   'customer/loadByPhone',
   async (phone: string) => {
-    const customer = await fetchCustomerByPhone(phone);
-    const orderHistory = await fetchOrderHistory(customer.id);
-    return { customer, orderHistory };
+    const res = await fetchCustomerByPhone(phone);
+    return res;
   },
 );
 
@@ -63,6 +62,7 @@ const customerSlice = createSlice({
         state.loading = false;
         state.customer = action.payload.customer;
         state.orderHistory = action.payload.orderHistory;
+        state.storeInfo = action.payload.storeInfo;
       })
       .addCase(loadCustomerByPhone.rejected, (state, action) => {
         state.loading = false;

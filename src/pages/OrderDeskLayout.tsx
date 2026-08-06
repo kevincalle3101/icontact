@@ -4,23 +4,22 @@ import SugerenciasSection from '@/pages/SugerenciasSection';
 import ResumenSection from '@/pages/ResumenSection';
 import PagoSection from '@/pages/PagoSection';
 
-/**
- * Desktop layout that mirrors the reference POS screen: all five sections
- * are visible at once on large screens (>=1024px), matching the target
- * design. On smaller screens, users navigate via the section tabs and only
- * the active route's section is shown (see routing in App.tsx).
- */
 export default function OrderDeskLayout() {
   return (
-    <div className="hidden gap-4 lg:grid lg:grid-cols-[320px_1fr_360px]">
-      <div className="flex flex-col gap-4">
+    <div className="hidden h-full gap-3 lg:grid lg:grid-cols-[280px_1fr_350px] items-start overflow-hidden">
+      {/* Column 1: Section 1 (Cliente cards stack) */}
+      <div className="flex flex-col gap-2.5 h-full overflow-y-auto pr-1 scrollbar-thin">
         <ClienteSection />
       </div>
-      <div className="flex flex-col gap-4">
+
+      {/* Column 2: Section 2 (Carta - Productos) & Section 3 (Venta Sugestiva) */}
+      <div className="flex flex-col gap-2.5 h-full overflow-y-auto pr-1 scrollbar-thin">
         <ProductosSection />
         <SugerenciasSection />
       </div>
-      <div className="flex flex-col gap-4">
+
+      {/* Column 3: Section 4 (Resumen Pedido) & Section 5 (Detalle de Pago) entwined as one scroll unit */}
+      <div className="flex flex-col gap-2.5 h-full overflow-y-auto pr-1 scrollbar-thin">
         <ResumenSection />
         <PagoSection />
       </div>

@@ -40,8 +40,8 @@ export default function ProductosSection() {
     return () => clearTimeout(handle);
   }, [searchQuery, dispatch]);
 
-  const handleAdd = (product: Product) => {
-    dispatch(addItem({ ...product, quantity: 1 }));
+  const handleAdd = (product: Product, kitchenObs?: string) => {
+    dispatch(addItem({ ...product, quantity: 1, kitchenObs }));
     toast.success(`${product.name} agregado al pedido`);
   };
 
@@ -49,24 +49,41 @@ export default function ProductosSection() {
   const productsToShow = isSearching ? searchResults : (itemsByCategory[activeCategory] ?? []);
 
   return (
-    <SectionContainer title="2. Carta - Productos" className="h-full">
-      <div className="flex flex-col gap-4">
-        <SearchBar value={searchQuery} onChange={(value) => dispatch(setSearchQuery(value))} />
-        {!isSearching && (
+    <SectionContainer
+      title="2. CARTA - PRODUCTOS"
+      className="h-full border border-slate-200 bg-white rounded-2xl shadow-xs"
+    >
+      <div className="flex flex-col gap-3">
+        {/* Requirement: Full catalog search bar */}
+        <SearchBar
+          value={searchQuery}
+          onChange={(value) => dispatch(setSearchQuery(value))}
+          placeholder="Buscar en esta categoría..."
+        />
+
+        <div className="flex items-start gap-3">
+          {/* Vertical category tabs on left side */}
           <CategoryTabs
             categories={PRODUCT_CATEGORIES}
             active={activeCategory}
-            onSelect={(category) => dispatch(setActiveCategory(category))}
+            onSelect={(category) => {
+              if (isSearching) dispatch(setSearchQuery(''));
+              dispatch(setActiveCategory(category));
+            }}
           />
-        )}
-        {loading && <Spinner label="Cargando productos..." />}
-        {error && !loading && (
-          <ErrorMessage
-            message={error}
-            onRetry={() => dispatch(loadProductsByCategory(activeCategory))}
-          />
-        )}
-        {!loading && !error && <ProductGrid products={productsToShow} onAdd={handleAdd} />}
+
+          {/* Product grid on right side */}
+          <div className="flex-1 min-w-0">
+            {loading && <Spinner label="Cargando productos..." />}
+            {error && !loading && (
+              <ErrorMessage
+                message={error}
+                onRetry={() => dispatch(loadProductsByCategory(activeCategory))}
+              />
+            )}
+            {!loading && !error && <ProductGrid products={productsToShow} onAdd={handleAdd} />}
+          </div>
+        </div>
       </div>
     </SectionContainer>
   );

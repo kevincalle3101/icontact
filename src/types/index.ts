@@ -2,18 +2,29 @@ export type Brand = 'KFC' | 'Chilis' | 'Madam Tusan' | 'Pizza Hut';
 
 export type DeliveryChannel = 'delivery' | 'pickup';
 
+export interface AddressItem {
+  id: string;
+  address: string;
+  number: string; // Nro/Mz
+  district: string;
+  department: string; // Dpto/Interior
+  reference: string;
+}
+
 export interface Customer {
   id: string;
   phone: string;
-  refCode?: string;
+  refCode?: string; // TLF REF
   firstName: string;
   lastName: string;
   dni: string;
   familyName?: string;
   address: string;
+  number?: string; // Nro/Mz
   district: string;
   department: string;
   reference: string;
+  addresses?: AddressItem[];
 }
 
 export interface OrderHistoryItem {
@@ -32,6 +43,11 @@ export type ProductCategory =
   | 'Desayunos'
   | 'Otros';
 
+export interface ProductOption {
+  category: string;
+  items: string[];
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -40,6 +56,8 @@ export interface Product {
   category: ProductCategory;
   emoji: string;
   imageUrl?: string;
+  appliesManagerDiscount?: boolean;
+  options?: ProductOption[];
 }
 
 export interface CartItem {
@@ -49,6 +67,9 @@ export interface CartItem {
   price: number;
   quantity: number;
   emoji: string;
+  appliesManagerDiscount?: boolean;
+  kitchenObs?: string; // Obs. Cocina (max 16-25 chars)
+  options?: ProductOption[];
 }
 
 export type PaymentMethod = 'gerencial' | 'soles' | 'usd' | 'tarjeta';
@@ -62,7 +83,9 @@ export interface PaymentDetails {
   invoiceType: InvoiceType;
   dni: string;
   name: string;
+  bonusDni?: string;
   driverObservation: string;
+  managerDiscountApplied?: boolean;
 }
 
 export interface StoreInfo {

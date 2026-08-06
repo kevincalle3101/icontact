@@ -1,11 +1,11 @@
 import clsx from '@/utils/clsx';
 import type { PaymentMethod as PaymentMethodType } from '@/types';
 
+// Options matching screenshot: Soles, Dólares, Tarjeta o Yape
 const OPTIONS: { value: PaymentMethodType; label: string; icon: string }[] = [
-  { value: 'gerencial', label: 'Desc. Gerencial', icon: '🏷️' },
   { value: 'soles', label: 'Soles', icon: '💵' },
-  { value: 'usd', label: 'USD', icon: '💲' },
-  { value: 'tarjeta', label: 'Tarjeta', icon: '💳' },
+  { value: 'usd', label: 'Dólares', icon: '💵' },
+  { value: 'tarjeta', label: 'Tarjeta o Yape', icon: '💳' },
 ];
 
 interface PaymentMethodProps {
@@ -15,7 +15,7 @@ interface PaymentMethodProps {
 
 export default function PaymentMethod({ value, onChange }: PaymentMethodProps) {
   return (
-    <div role="radiogroup" aria-label="Medio de pago" className="grid grid-cols-4 gap-2">
+    <div role="radiogroup" aria-label="Medio de pago" className="grid grid-cols-3 gap-2">
       {OPTIONS.map((option) => (
         <button
           key={option.value}
@@ -24,14 +24,16 @@ export default function PaymentMethod({ value, onChange }: PaymentMethodProps) {
           aria-checked={value === option.value}
           onClick={() => onChange(option.value)}
           className={clsx(
-            'flex flex-col items-center gap-1 rounded-md border px-2 py-2 text-[11px] font-medium transition-colors',
+            'flex flex-col items-center justify-center gap-1 rounded-xl border p-2.5 text-xs font-semibold transition-all',
             value === option.value
-              ? 'border-brand-navy bg-brand-navy/10 text-brand-navy'
-              : 'border-slate-200 text-slate-500 hover:bg-slate-50',
+              ? 'border-blue-500 bg-blue-50/80 text-blue-900 shadow-2xs ring-1 ring-blue-500/30'
+              : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50',
           )}
         >
-          <span aria-hidden="true">{option.icon}</span>
-          {option.label}
+          <span className="text-xl" aria-hidden="true">
+            {option.icon}
+          </span>
+          <span className="text-[11px] text-center leading-tight">{option.label}</span>
         </button>
       ))}
     </div>

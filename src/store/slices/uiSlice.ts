@@ -17,9 +17,11 @@ const initialState: UiState = {
     amount: 0,
     exactPayment: false,
     invoiceType: 'boleta',
-    dni: '',
-    name: '',
+    dni: '72749143',
+    name: 'Rosa Stefania Gerónimo Llanos',
+    bonusDni: '72749143',
     driverObservation: '',
+    managerDiscountApplied: false,
   },
 };
 
@@ -39,11 +41,14 @@ const uiSlice = createSlice({
     setInvoiceType(state, action: PayloadAction<PaymentDetails['invoiceType']>) {
       state.payment.invoiceType = action.payload;
     },
+    toggleManagerDiscount(state) {
+      state.payment.managerDiscountApplied = !state.payment.managerDiscountApplied;
+    },
     setPaymentField(
       state,
-      action: PayloadAction<{ field: 'dni' | 'name' | 'driverObservation'; value: string }>,
+      action: PayloadAction<{ field: keyof PaymentDetails; value: any }>,
     ) {
-      state.payment[action.payload.field] = action.payload.value;
+      (state.payment as any)[action.payload.field] = action.payload.value;
     },
     resetPayment(state) {
       state.payment = initialState.payment;
@@ -59,6 +64,7 @@ export const {
   setPaymentAmount,
   setExactPayment,
   setInvoiceType,
+  toggleManagerDiscount,
   setPaymentField,
   resetPayment,
   tickTmo,

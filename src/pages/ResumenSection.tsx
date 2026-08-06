@@ -1,3 +1,4 @@
+import { FiTrash2 } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import SectionContainer from '@/components/shared/SectionContainer';
 import CartItemRow from '@/components/resumen/CartItemRow';
@@ -8,6 +9,7 @@ import {
   removeItem,
   selectCartItems,
   selectCartSubtotal,
+  updateKitchenObs,
   updateQuantity,
 } from '@/store/slices/cartSlice';
 
@@ -33,17 +35,45 @@ export default function ResumenSection() {
 
   const handleClearCart = () => {
     dispatch(clearCart());
-    toast.info('Pedido cancelado');
+    toast.info('Carrito limpiado');
+  };
+
+  const handleUpdateKitchenObs = (productId: string, obs: string) => {
+    dispatch(updateKitchenObs({ productId, kitchenObs: obs }));
+    toast.success('Observación guardada');
   };
 
   return (
-    <SectionContainer title="4. Resumen Pedido" className="h-full">
+    <SectionContainer
+      title="4. RESUMEN PEDIDO"
+      className="border border-slate-200 bg-white rounded-2xl shadow-xs"
+      actions={
+        <button
+          type="button"
+          onClick={handleClearCart}
+          disabled={items.length === 0}
+          className="text-slate-400 hover:text-red-600 disabled:opacity-40 transition-colors"
+          title="Limpiar carrito"
+          aria-label="Limpiar carrito"
+        >
+          <FiTrash2 size={15} />
+        </button>
+      }
+    >
+      {/* Table header row matching screenshot: Cant. | Producto | Obs. | Precio */}
+      <div className="mb-2 flex items-center justify-between border-b border-slate-200 pb-1 text-[10px] font-bold text-slate-400 uppercase">
+        <span className="w-8">Cant.</span>
+        <span className="flex-1 px-1">Producto</span>
+        <span className="w-8 text-center">Obs.</span>
+        <span className="w-16 text-right">Precio</span>
+      </div>
+
       {items.length === 0 ? (
-        <p className="py-6 text-center text-sm text-slate-400">
+        <p className="py-6 text-center text-xs text-slate-400">
           Aún no hay productos en el pedido.
         </p>
       ) : (
-        <ul aria-label="Productos en el pedido">
+        <ul aria-label="Productos en el pedido" className="flex flex-col">
           {items.map((item) => (
             <CartItemRow
               key={item.productId}
@@ -51,12 +81,15 @@ export default function ResumenSection() {
               onIncrement={handleIncrement}
               onDecrement={handleDecrement}
               onRemove={handleRemove}
+              onUpdateKitchenObs={handleUpdateKitchenObs}
             />
           ))}
         </ul>
       )}
+
       <OrderSummary
         subtotal={subtotal}
+        total={subtotal}
         onClearCart={handleClearCart}
         disabled={items.length === 0}
       />

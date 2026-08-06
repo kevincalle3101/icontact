@@ -1,9 +1,17 @@
 import { z } from 'zod';
 
 export const paymentFormSchema = z.object({
-  dni: z.string().regex(/^\d{8}$/, 'DNI debe tener 8 dígitos'),
-  name: z.string().min(1, 'Nombre requerido'),
-  driverObservation: z.string(),
+  invoiceType: z.enum(['boleta', 'factura']),
+  dni: z.string().min(1, 'DNI/CE/RUC es requerido'),
+  name: z
+    .string()
+    .min(1, 'Nombre / Razón Social es requerido')
+    .max(100, 'Máximo 100 caracteres para Nombre / Razón Social'),
+  bonusDni: z.string().optional(),
+  driverObservation: z
+    .string()
+    .max(100, 'Máximo 100 caracteres para Observación Driver')
+    .optional(),
 });
 
 export type PaymentFormValues = z.infer<typeof paymentFormSchema>;

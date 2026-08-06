@@ -24,7 +24,10 @@ export default function SugerenciasSection() {
   };
 
   return (
-    <SectionContainer title="3. Venta Sugestiva">
+    <SectionContainer
+      title="3. VENTA SUGESTIVA"
+      className="border border-slate-200 bg-white rounded-2xl shadow-xs"
+    >
       {loading && suggested.length === 0 ? (
         <Spinner label="Cargando sugerencias..." />
       ) : (

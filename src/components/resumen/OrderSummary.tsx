@@ -1,34 +1,24 @@
-import Button from '@/components/shared/Button';
-
 interface OrderSummaryProps {
   subtotal: number;
+  total?: number;
   onClearCart: () => void;
   disabled?: boolean;
 }
 
-export default function OrderSummary({ subtotal, onClearCart, disabled }: OrderSummaryProps) {
-  const total = subtotal;
-
+export default function OrderSummary({
+  subtotal,
+  total = subtotal,
+}: OrderSummaryProps) {
   return (
-    <div className="flex flex-col gap-2 border-t border-slate-200 pt-3">
-      <div className="flex items-center justify-between text-sm text-slate-500">
+    <div className="flex flex-col gap-1 border-t border-slate-200 pt-2 font-semibold">
+      <div className="flex items-center justify-end gap-3 text-xs text-slate-600">
         <span>Subtotal:</span>
-        <span>S/ {subtotal.toFixed(2)}</span>
+        <span className="w-20 text-right">S/ {subtotal.toFixed(2)}</span>
       </div>
-      <div className="flex items-center justify-between text-base font-bold text-slate-800">
+      <div className="flex items-center justify-end gap-3 text-sm font-bold text-slate-900">
         <span>Total:</span>
-        <span>S/ {total.toFixed(2)}</span>
+        <span className="w-20 text-right">S/ {total.toFixed(2)}</span>
       </div>
-      <Button
-        type="button"
-        variant="danger"
-        size="sm"
-        onClick={onClearCart}
-        disabled={disabled}
-        className="self-end"
-      >
-        Cancelar pedido
-      </Button>
     </div>
   );
 }

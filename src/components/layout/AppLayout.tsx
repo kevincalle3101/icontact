@@ -6,15 +6,15 @@ import OrderDeskLayout from '@/pages/OrderDeskLayout';
 
 export default function AppLayout() {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-100">
+    <div className="flex h-screen max-h-screen flex-col bg-[#eef2f8] overflow-hidden select-none">
       <TopBar />
       <SectionNav />
-      <main className="flex-1 p-3 sm:p-4">
+      <main className="flex-1 overflow-hidden p-2.5 sm:p-3">
         <ErrorBoundary>
-          {/* Desktop: all sections visible at once, mirroring the reference layout */}
+          {/* Desktop: all sections visible at once, mirroring reference layout */}
           <OrderDeskLayout />
           {/* Mobile/tablet: navigate between sections via routes */}
-          <div className="lg:hidden">
+          <div className="lg:hidden h-full overflow-y-auto">
             <Outlet />
           </div>
         </ErrorBoundary>
