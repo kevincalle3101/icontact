@@ -63,7 +63,7 @@ export default function ProductCard({ product, onAdd, compact = false }: Product
               type="button"
               onClick={() => onAdd(product)}
               aria-label={`Agregar ${product.name} al carrito`}
-              className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-[#0b1021] text-white transition-colors hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0b1021]"
+              className="flex h-6.5 w-6.5 items-center justify-center rounded-full bg-[#1a1f5e] text-white transition-colors hover:bg-[#252b7a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1f5e]"
             >
               <FiPlus size={13} aria-hidden="true" />
             </button>

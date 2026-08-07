@@ -94,7 +94,7 @@ export default function ClienteSection() {
                 type="button"
                 onClick={() => handleSearch(phoneInput)}
                 disabled={loading}
-                className="rounded-md bg-[#050b24] px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-white hover:bg-slate-800 transition-colors shrink-0"
+                className="rounded-md bg-[#1a1f5e] px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white transition-colors shrink-0"
               >
                 AUDAZ
               </button>
@@ -109,12 +109,12 @@ export default function ClienteSection() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 truncate">
                 <span className="text-slate-500 text-xs shrink-0">👤</span>
-                <div className="flex flex-col text-[11px] leading-snug font-extrabold text-[#0b1021] truncate">
+                <div className="flex flex-col text-[11px] leading-tight font-extrabold text-black truncate">
                   <span>{customer?.firstName || 'Rosa Stefania'}</span>
                   <span>{customer?.lastName || 'Gerónimo Llanos'}</span>
                 </div>
               </div>
-              <span className="text-[#050b24] text-[9px] ml-1 shrink-0">▼</span>
+              <span className="text-[#1a1f5e] text-[9px] ml-1 shrink-0">▼</span>
             </div>
 
             {/* DNI & Familia lines */}
@@ -139,17 +139,17 @@ export default function ClienteSection() {
             <button
               type="button"
               onClick={() => setShowAddressDropdown((v) => !v)}
-              className="flex w-full items-center justify-between font-bold text-[#0b1021] text-left text-[11px] bg-transparent py-0.5"
+              className="flex w-full items-center justify-between font-bold text-left text-[11px] bg-transparent py-0.5"
             >
               <div className="flex items-center gap-1.5 truncate">
                 <span className="text-red-600 text-xs shrink-0">📍</span>
-                <span className="truncate font-extrabold text-[#0b1021]">
+                <span className="truncate font-extrabold text-black">
                   {customer
                     ? `${customer.address} ${customer.number || ''}`.trim()
                     : 'Avenida Javier Prado Oeste 1650'}
                 </span>
               </div>
-              <span className="text-[#050b24] text-[9px] ml-1 shrink-0">▼</span>
+              <span className="text-[#1a1f5e] text-[9px] ml-1 shrink-0">▼</span>
             </button>
 
             {showAddressDropdown && customer?.addresses && customer.addresses.length > 0 && (

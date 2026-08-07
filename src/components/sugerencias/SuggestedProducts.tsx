@@ -49,7 +49,7 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
                 type="button"
                 onClick={() => onAdd(product)}
                 aria-label={`Agregar ${product.name} sugerido`}
-                className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0f172a] text-white hover:bg-slate-800 transition-colors"
+                className="flex h-5 w-5 items-center justify-center rounded-full bg-[#1a1f5e] text-white hover:bg-[#252b7a] transition-colors"
               >
                 <FiPlus size={11} aria-hidden="true" />
               </button>

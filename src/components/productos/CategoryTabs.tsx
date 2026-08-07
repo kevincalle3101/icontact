@@ -24,7 +24,7 @@ export default function CategoryTabs({ categories, active, onSelect }: CategoryT
           className={clsx(
             'w-full text-left rounded-xl px-2.5 py-1 text-[11px] font-bold transition-all',
             category === active
-              ? 'bg-[#0b1021] text-white shadow-xs'
+              ? 'bg-[#1a1f5e] text-white shadow-xs'
               : 'text-[#475569] hover:bg-slate-100 hover:text-slate-900 font-semibold',
           )}
         >

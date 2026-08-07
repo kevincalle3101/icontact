@@ -21,9 +21,9 @@ export default function DeliveryType({ value, onChange }: DeliveryTypeProps) {
           aria-checked={value === channel}
           onClick={() => onChange(channel)}
           className={clsx(
-            'rounded-xl py-2.5 px-4 text-xs font-bold transition-all text-center leading-none',
+            'rounded-lg py-3 px-4 text-xs font-bold transition-all text-center leading-none',
             value === channel
-              ? 'bg-[#141b43] text-white shadow-2xs'
+              ? 'bg-[#1a1f5e] text-white shadow-2xs'
               : 'border border-[#cbd5e1] bg-white text-[#78859b] hover:bg-slate-50',
           )}
         >

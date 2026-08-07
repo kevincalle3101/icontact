@@ -23,7 +23,7 @@ export default function TopBar() {
   }, [dispatch]);
 
   return (
-    <header className="bg-[#0b1021] text-white">
+    <header className="bg-[#0a0e2e] text-white">
       {/* Top Header Row */}
       <div className="flex items-center justify-between px-5 py-2 text-xs font-bold">
         <span className="text-sm tracking-tight text-white font-extrabold">
@@ -42,20 +42,28 @@ export default function TopBar() {
         </div>
       </div>
 
-      {/* Messages Sub-banner matching screenshot */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 border-t border-white/10 bg-[#0f172a] px-5 py-1.5 text-[11px]">
-        <div className="flex items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 rounded bg-red-900/40 px-1.5 py-0.5 font-bold uppercase text-red-400 text-[10px]">
-            🚩 MENSAJE DE TIENDA
-          </span>
-          <span className="font-extrabold text-red-500 tracking-wide">{storeMessage}</span>
+      {/* Messages Sub-banner matching screenshot: solid white background, 2 columns with vertical divider line */}
+      <div className="grid grid-cols-2 bg-white text-[#8c97a8] border-b border-slate-200">
+        {/* Left column: MENSAJE DE TIENDA */}
+        <div className="flex flex-col justify-center px-4 py-1.5 border-r border-slate-200">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#8c97a8]">
+            <span className="text-red-600 text-xs">🚩</span>
+            <span>MENSAJE DE TIENDA</span>
+          </div>
+          <div className="text-xs font-black tracking-tight text-[#d32f2f] uppercase mt-0.5">
+            {storeMessage}
+          </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 rounded bg-blue-900/40 px-1.5 py-0.5 font-bold uppercase text-slate-300 text-[10px]">
-            ℹ️ MENSAJE GERENCIAL
-          </span>
-          <span className="font-extrabold text-red-500 tracking-wide">{managerMessage}</span>
+        {/* Right column: MENSAJE GERENCIAL */}
+        <div className="flex flex-col justify-center px-4 py-1.5">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#8c97a8]">
+            <span className="text-blue-500 text-xs">ℹ️</span>
+            <span>MENSAJE GERENCIAL</span>
+          </div>
+          <div className="text-xs font-black tracking-tight text-[#d32f2f] uppercase mt-0.5">
+            {managerMessage}
+          </div>
         </div>
       </div>
     </header>

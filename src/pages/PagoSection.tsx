@@ -172,7 +172,7 @@ export default function PagoSection() {
             <button
               type="submit"
               disabled={items.length === 0}
-              className="w-full rounded-xl bg-[#a3b3d4] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-slate-700 disabled:opacity-50"
+              className="w-full rounded-xl bg-[#1a1f5e] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-[#252b7a] disabled:opacity-50"
             >
               CONTINUAR
             </button>
