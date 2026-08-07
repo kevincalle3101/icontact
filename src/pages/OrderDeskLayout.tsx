@@ -6,7 +6,7 @@ import PagoSection from '@/pages/PagoSection';
 
 export default function OrderDeskLayout() {
   return (
-    <div className="hidden h-full gap-3 lg:grid lg:grid-cols-[280px_1fr_350px] items-start overflow-hidden">
+    <div className="hidden h-full gap-3 lg:grid lg:grid-cols-[279px_1fr_350px] items-start overflow-hidden">
       {/* Column 1: Section 1 (Cliente cards stack) */}
       <div className="flex flex-col gap-2.5 h-full overflow-y-auto pr-1 scrollbar-thin">
         <ClienteSection />

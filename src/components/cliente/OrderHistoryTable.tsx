@@ -1,4 +1,3 @@
-import { FiEye } from 'react-icons/fi';
 import type { OrderHistoryItem } from '@/types';
 
 interface OrderHistoryTableProps {
@@ -8,38 +7,40 @@ interface OrderHistoryTableProps {
 
 export default function OrderHistoryTable({ orders, onViewDetails }: OrderHistoryTableProps) {
   if (orders.length === 0) {
-    return <p className="text-xs text-slate-400">Sin pedidos recientes</p>;
+    return <p className="text-[10px] text-slate-400">Sin pedidos recientes</p>;
   }
 
   return (
-    <table className="w-full text-left text-xs">
+    <table className="w-full text-left text-[11px] border-collapse">
       <caption className="sr-only">Últimos pedidos del cliente</caption>
       <thead>
-        <tr className="text-slate-400">
-          <th scope="col" className="py-1 font-medium">
+        <tr className="text-[#a0abba] font-bold text-[10px] border-b border-[#f0f3f8]">
+          <th scope="col" className="pb-1 font-bold">
             Hora
           </th>
-          <th scope="col" className="py-1 font-medium">
+          <th scope="col" className="pb-1 text-right font-bold pr-1">
             Total
           </th>
-          <th scope="col" className="py-1 text-right font-medium">
+          <th scope="col" className="pb-1 text-right w-6 font-bold">
             <span className="sr-only">Acciones</span>
           </th>
         </tr>
       </thead>
       <tbody>
         {orders.slice(0, 2).map((order) => (
-          <tr key={order.id} className="border-t border-slate-100">
-            <td className="py-1.5 text-slate-600">{order.time}</td>
-            <td className="py-1.5 font-semibold text-slate-700">S/ {order.total.toFixed(2)}</td>
-            <td className="py-1.5 text-right">
+          <tr key={order.id} className="border-b border-[#f0f3f8] last:border-b-0">
+            <td className="py-1 text-[#475569] font-medium text-[10px]">{order.time}</td>
+            <td className="py-1 text-right font-extrabold text-[#1e293b] text-[10px] pr-1">
+              S/ {order.total.toFixed(2)}
+            </td>
+            <td className="py-1 text-right">
               <button
                 type="button"
                 onClick={() => onViewDetails(order)}
                 aria-label={`Ver detalle del pedido de las ${order.time}`}
-                className="text-slate-500 hover:text-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-navy"
+                className="text-[#64748b] hover:text-[#0b1021] inline-flex items-center justify-center transition-colors"
               >
-                <FiEye aria-hidden="true" />
+                👁️
               </button>
             </td>
           </tr>

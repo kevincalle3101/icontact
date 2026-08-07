@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { FiEdit2, FiPhone, FiSearch, FiUser, FiMapPin, FiChevronDown } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import Spinner from '@/components/shared/Spinner';
 import ErrorMessage from '@/components/shared/ErrorMessage';
@@ -52,7 +51,7 @@ export default function ClienteSection() {
 
   return (
     <>
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2">
         {loading && !customer && <Spinner label="Buscando cliente..." />}
         {error && (
           <ErrorMessage
@@ -63,77 +62,68 @@ export default function ClienteSection() {
 
         {/* Card 1: 1. CLIENTE */}
         <section className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs">
+          {/* Header row */}
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xs font-bold uppercase tracking-wide text-slate-700">
+            <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
               1. CLIENTE
             </h2>
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="flex h-6 w-6 items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100"
+              className="flex h-5.5 w-5.5 items-center justify-center rounded-lg border border-[#c7d1e0] bg-white text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors"
               title="Editar / Registrar cliente"
             >
-              <FiEdit2 size={12} />
+              ✏️
             </button>
           </div>
 
-          <div className="flex flex-col gap-2 text-xs">
-            {/* Phone search line */}
+          <div className="flex flex-col gap-2 text-[11px]">
+            {/* Phone row: icon + input + AUDAZ pill outside input */}
             <div className="flex items-center gap-1.5">
-              <div className="relative flex-1">
-                <FiPhone
-                  className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"
-                  size={13}
-                />
+              <span className="text-slate-600 text-xs">📞</span>
+              <div className="flex-1">
                 <input
                   type="tel"
                   value={phoneInput}
                   onChange={(e) => setPhoneInput(e.target.value)}
                   onKeyDown={handlePhoneKeyDown}
-                  className="w-full rounded-md border border-slate-300 py-1 pl-7 pr-16 text-xs font-bold text-slate-800 focus:border-slate-800 focus:outline-none bg-slate-50/50"
+                  className="w-full rounded-xl border border-[#c0cbe0] py-1 px-2.5 text-[11px] font-bold text-[#0b1021] focus:border-[#0b1021] focus:outline-none bg-white"
                 />
-                <span className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded bg-[#0f172a] px-1.5 py-0.5 text-[9px] font-bold uppercase text-white">
-                  AUDAZ
-                </span>
               </div>
               <button
                 type="button"
                 onClick={() => handleSearch(phoneInput)}
                 disabled={loading}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200"
-                title="Buscar teléfono"
+                className="rounded-md bg-[#050b24] px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-white hover:bg-slate-800 transition-colors shrink-0"
               >
-                <FiSearch size={13} />
+                AUDAZ
               </button>
             </div>
 
-            {/* TLF REF */}
-            <div className="text-[11px] text-slate-500">
-              <span className="font-semibold text-slate-600">TLF REF:</span>{' '}
-              <span>{customer?.refCode || '996097394'}</span>
+            {/* TLF REF line */}
+            <div className="text-[10px] text-[#7e8aa2] font-semibold">
+              TLF REF: <span className="font-bold text-[#2a3449]">{customer?.refCode || '996097394'}</span>
             </div>
 
-            {/* Customer name dropdown row */}
-            <div className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 font-bold text-slate-800">
-              <div className="flex items-center gap-1.5 truncate">
-                <FiUser className="text-slate-500 shrink-0" size={13} />
-                <span className="truncate">
-                  {customer
-                    ? `${customer.firstName} ${customer.lastName}`
-                    : 'Rosa Stefania Gerónimo Llanos'}
-                </span>
+            {/* Customer name row with person icon on left & dark caret down on right */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 truncate">
+                <span className="text-slate-500 text-xs shrink-0">👤</span>
+                <div className="flex flex-col text-[11px] leading-snug font-extrabold text-[#0b1021] truncate">
+                  <span>{customer?.firstName || 'Rosa Stefania'}</span>
+                  <span>{customer?.lastName || 'Gerónimo Llanos'}</span>
+                </div>
               </div>
-              <FiChevronDown className="text-slate-400 shrink-0 ml-1" />
+              <span className="text-[#050b24] text-[9px] ml-1 shrink-0">▼</span>
             </div>
 
-            {/* DNI & Familia */}
-            <div className="text-[11px] text-slate-600 leading-tight">
+            {/* DNI & Familia lines */}
+            <div className="flex flex-col gap-0.5 text-[10px] text-[#7e8aa2] font-medium leading-tight">
               <p>
-                <span className="font-semibold">DNI:</span> {customer?.dni || '72749143'}
+                DNI: <span className="font-bold text-[#2a3449]">{customer?.dni || '72749143'}</span>
               </p>
               <p>
-                <span className="font-semibold">Familia:</span>{' '}
-                {customer?.familyName || customer?.lastName || 'Gerónimo Llanos'}
+                Familia: <span className="font-bold text-[#2a3449]">{customer?.familyName || customer?.lastName || 'Gerónimo Llanos'}</span>
               </p>
             </div>
           </div>
@@ -141,7 +131,7 @@ export default function ClienteSection() {
 
         {/* Card 2: DIRECCIÓN DE ENTREGA */}
         <section className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs">
-          <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-700">
+          <h2 className="mb-2 text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
             DIRECCIÓN DE ENTREGA
           </h2>
 
@@ -149,17 +139,17 @@ export default function ClienteSection() {
             <button
               type="button"
               onClick={() => setShowAddressDropdown((v) => !v)}
-              className="flex w-full items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 font-semibold text-slate-800 text-left text-xs"
+              className="flex w-full items-center justify-between font-bold text-[#0b1021] text-left text-[11px] bg-transparent py-0.5"
             >
               <div className="flex items-center gap-1.5 truncate">
-                <FiMapPin className="text-red-500 shrink-0" size={13} />
-                <span className="truncate">
+                <span className="text-red-600 text-xs shrink-0">📍</span>
+                <span className="truncate font-extrabold text-[#0b1021]">
                   {customer
                     ? `${customer.address} ${customer.number || ''}`.trim()
                     : 'Avenida Javier Prado Oeste 1650'}
                 </span>
               </div>
-              <FiChevronDown className="text-slate-400 shrink-0 ml-1" />
+              <span className="text-[#050b24] text-[9px] ml-1 shrink-0">▼</span>
             </button>
 
             {showAddressDropdown && customer?.addresses && customer.addresses.length > 0 && (
@@ -189,22 +179,22 @@ export default function ClienteSection() {
             )}
           </div>
 
-          <div className="flex flex-col gap-0.5 text-[11px] text-slate-600 leading-tight">
+          <div className="flex flex-col gap-1 text-[10px] text-[#7e8aa2] font-medium leading-tight">
             <p>
-              <span className="font-semibold">Distrito:</span> {customer?.district || 'San Isidro'}
+              Distrito: <span className="font-bold text-[#2a3449]">{customer?.district || 'San Isidro'}</span>
             </p>
             <p>
-              <span className="font-semibold">Departamento:</span> {customer?.department || 'Block C'}
+              Departamento: <span className="font-bold text-[#2a3449]">{customer?.department || 'Block C'}</span>
             </p>
             <p className="truncate">
-              <span className="font-semibold">Ref.:</span> {customer?.reference || 'CRC AV LAS FLORES'}
+              Ref.: <span className="font-bold text-[#2a3449]">{customer?.reference || 'CRC AV LAS FLORES'}</span>
             </p>
           </div>
         </section>
 
         {/* Card 3: CANAL DE VENTA */}
         <section className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs">
-          <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-700">
+          <h2 className="mb-2 text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
             CANAL DE VENTA
           </h2>
           <DeliveryType
@@ -215,21 +205,23 @@ export default function ClienteSection() {
 
         {/* Card 4: ÚLTIMOS PEDIDOS */}
         <section className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs">
-          <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-700">
+          <h2 className="mb-2 text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
             ÚLTIMOS PEDIDOS
           </h2>
           <OrderHistoryTable orders={orderHistory} onViewDetails={handleViewOrder} />
         </section>
 
         {/* Card 5: DETALLE TIENDA */}
-        <section className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs text-xs text-slate-600">
-          <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-700">
+        <section className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs text-[10px] text-[#7e8aa2] font-medium leading-relaxed flex flex-col gap-1">
+          <h2 className="mb-1 text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
             DETALLE TIENDA
           </h2>
-          <p className="font-semibold text-slate-800">
-            Tienda: {storeInfo.code} - {storeInfo.name}
+          <p>
+            Tienda: <span className="font-extrabold text-[#212b40]">{storeInfo.code} - {storeInfo.name}</span>
           </p>
-          <p className="text-[11px] text-slate-500 mt-0.5">Direcc.: {storeInfo.address}</p>
+          <p>
+            Direcc.: <span className="font-extrabold text-[#212b40]">{storeInfo.address}</span>
+          </p>
         </section>
       </div>
 
