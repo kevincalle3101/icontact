@@ -185,7 +185,7 @@ export const SUGGESTED_PRODUCTS: Product[] = [
     price: 13.0,
     category: 'Complementos',
     emoji: '🍟',
-    appliesManagerDiscount: true,
+    appliesManagerDiscount: false,
   },
   {
     id: 'p-post-pie-manzana',
@@ -203,7 +203,7 @@ export const SUGGESTED_PRODUCTS: Product[] = [
     price: 7.9,
     category: 'Bebidas',
     emoji: '🍋',
-    appliesManagerDiscount: true,
+    appliesManagerDiscount: false,
   },
   {
     id: 'p-sugg-ensalada',
@@ -221,7 +221,7 @@ export const SUGGESTED_PRODUCTS: Product[] = [
     price: 6.5,
     category: 'Postres',
     emoji: '🍦',
-    appliesManagerDiscount: true,
+    appliesManagerDiscount: false,
   },
   {
     id: 'p-sugg-alitas',

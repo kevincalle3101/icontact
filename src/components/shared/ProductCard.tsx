@@ -41,8 +41,8 @@ export default function ProductCard({ product, onAdd, compact = false }: Product
                   {product.description}
                 </p>
                 {/* Info icon with tooltip for manager discount, placed below description */}
-                <div className="mt-0.5 flex items-center">
-                  {product.appliesManagerDiscount ? (
+                {product.appliesManagerDiscount && (
+                  <div className="mt-0.5 flex items-center">
                     <div className="relative group">
                       <span
                         className="text-[12px] cursor-help leading-none"
@@ -58,26 +58,14 @@ export default function ProductCard({ product, onAdd, compact = false }: Product
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowObsModal(true);
-                      }}
-                      title="Ver detalle / Observación cocina"
-                      className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-xs bg-[#64748b] text-[9px] font-bold text-white hover:opacity-80 transition-opacity"
-                    >
-                      i
-                    </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
           {/* Bottom Price & Add Button Row */}
-          <div className="mt-2 flex items-center justify-between">
+          <div className="mt-0.5 flex items-center justify-between">
             <span className="text-[12px] font-bold text-[#e4002b]">S/ {product.price.toFixed(2)}</span>
             <button
               type="button"

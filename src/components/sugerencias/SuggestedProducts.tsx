@@ -41,23 +41,23 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
         {visibleProducts.map((product, index) => (
           <article
             key={`${product.id}-${index}`}
-            className="flex flex-col items-center justify-between rounded-xl border border-slate-200/90 bg-white p-2 text-center shadow-2xs hover:shadow-xs transition-shadow"
+            className="flex flex-col items-center rounded-xl border border-slate-200/90 bg-white p-1.5 text-center shadow-2xs hover:shadow-xs transition-shadow"
           >
-            <div className="text-xl mb-0.5" aria-hidden="true">
+            <div className="text-lg" aria-hidden="true">
               {product.emoji}
             </div>
             <div>
               <h3 className="text-[9px] font-bold text-[#555555] leading-tight truncate max-w-[100px]">
                 {product.name}
               </h3>
-              <p className="text-[9px] text-[#555555] mt-0.5">
+              <p className="text-[9px] text-[#555555]">
                 + S/ {product.price.toFixed(2)}
               </p>
             </div>
 
             {/* Info icon with tooltip for manager discount */}
-            <div className="mt-1 flex flex-col items-center gap-1">
-              {product.appliesManagerDiscount ? (
+            <div className="flex flex-col items-center gap-0.5">
+              {product.appliesManagerDiscount && (
                 <div className="relative group">
                   <span
                     className="text-[12px] cursor-help leading-none"
@@ -73,10 +73,6 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
                     </div>
                   </div>
                 </div>
-              ) : (
-                <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-xs bg-[#64748b] text-[9px] font-bold text-white">
-                  i
-                </span>
               )}
               <button
                 type="button"
