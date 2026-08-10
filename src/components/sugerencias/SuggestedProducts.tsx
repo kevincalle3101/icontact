@@ -1,5 +1,8 @@
+import { useMemo, useState } from 'react';
 import { FiChevronLeft, FiChevronRight, FiPlus } from 'react-icons/fi';
 import type { Product } from '@/types';
+
+const PAGE_SIZE = 4;
 
 interface SuggestedProductsProps {
   products: Product[];
@@ -7,12 +10,27 @@ interface SuggestedProductsProps {
 }
 
 export default function SuggestedProducts({ products, onAdd }: SuggestedProductsProps) {
+  const [page, setPage] = useState(0);
+
+  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages - 1);
+
+  const visibleProducts = useMemo(
+    () => products.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE),
+    [products, safePage],
+  );
+
+  const goPrev = () => setPage((p) => Math.max(0, p - 1));
+  const goNext = () => setPage((p) => Math.min(totalPages - 1, p + 1));
+
   return (
     <div className="flex items-center gap-1.5">
       {/* Left carousel arrow */}
       <button
         type="button"
-        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+        onClick={goPrev}
+        disabled={safePage === 0}
+        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed"
         title="Anterior"
       >
         <FiChevronLeft size={14} />
@@ -20,7 +38,7 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
 
       {/* Suggested products cards */}
       <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-4">
-        {products.slice(0, 4).map((product, index) => (
+        {visibleProducts.map((product, index) => (
           <article
             key={`${product.id}-${index}`}
             className="flex flex-col items-center justify-between rounded-xl border border-slate-200/90 bg-white p-2 text-center shadow-2xs hover:shadow-xs transition-shadow"
@@ -61,7 +79,9 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
       {/* Right carousel arrow */}
       <button
         type="button"
-        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+        onClick={goNext}
+        disabled={safePage >= totalPages - 1}
+        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed"
         title="Siguiente"
       >
         <FiChevronRight size={14} />
