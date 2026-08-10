@@ -16,6 +16,15 @@ export async function fetchProductsByCategory(category: ProductCategory): Promis
   return data;
 }
 
+export async function fetchProductsByBrand(brand: string): Promise<Product[]> {
+  if (USE_MOCKS) {
+    // In mock mode, return all products regardless of brand
+    return simulateDelay(MOCK_PRODUCTS);
+  }
+  const { data } = await apiClient.get<Product[]>('/products', { params: { brand } });
+  return data;
+}
+
 export async function searchProducts(query: string): Promise<Product[]> {
   if (USE_MOCKS) {
     const lower = query.trim().toLowerCase();

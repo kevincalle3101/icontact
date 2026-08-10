@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FiUser } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { tickTmo } from '@/store/slices/uiSlice';
+import { setActiveBrand } from '@/store/slices/productsSlice';
 import BrandDropdown from '@/components/cliente/BrandDropdown';
 import type { Brand } from '@/types';
 
@@ -15,12 +16,16 @@ function formatTime(totalSeconds: number): string {
 export default function TopBar() {
   const dispatch = useAppDispatch();
   const { storeMessage, managerMessage, tmoSeconds } = useAppSelector((state) => state.ui);
-  const [brand, setBrand] = useState<Brand>('KFC');
+  const activeBrand = useAppSelector((state) => state.products.activeBrand);
 
   useEffect(() => {
     const interval = setInterval(() => dispatch(tickTmo()), 1000);
     return () => clearInterval(interval);
   }, [dispatch]);
+
+  const handleBrandChange = (brand: Brand) => {
+    dispatch(setActiveBrand(brand));
+  };
 
   return (
     <header className="bg-[#0a0e2e] text-white">
@@ -31,7 +36,7 @@ export default function TopBar() {
         </span>
 
         <div className="flex items-center gap-3">
-          <BrandDropdown value={brand} onChange={setBrand} />
+          <BrandDropdown value={activeBrand} onChange={handleBrandChange} />
           <button
             type="button"
             aria-label="Cuenta de usuario"

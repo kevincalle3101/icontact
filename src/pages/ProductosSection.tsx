@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import SectionContainer from '@/components/shared/SectionContainer';
 import Spinner from '@/components/shared/Spinner';
@@ -10,8 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
   PRODUCT_CATEGORIES,
   clearSearch,
-  loadProductsByCategory,
-  runProductSearch,
+  loadProductsByBrand,
   setActiveCategory,
   setSearchQuery,
 } from '@/store/slices/productsSlice';
@@ -20,33 +19,41 @@ import type { Product } from '@/types';
 
 export default function ProductosSection() {
   const dispatch = useAppDispatch();
-  const { activeCategory, itemsByCategory, searchQuery, searchResults, loading, error } =
+  const { activeBrand, allProducts, activeCategory, searchQuery, loading, error } =
     useAppSelector((state) => state.products);
 
+  // Load products when brand changes
   useEffect(() => {
-    if (!itemsByCategory[activeCategory]) {
-      dispatch(loadProductsByCategory(activeCategory));
-    }
-  }, [activeCategory, itemsByCategory, dispatch]);
+    dispatch(loadProductsByBrand(activeBrand));
+  }, [activeBrand, dispatch]);
 
-  useEffect(() => {
-    const handle = setTimeout(() => {
-      if (searchQuery.trim()) {
-        dispatch(runProductSearch(searchQuery));
-      } else {
-        dispatch(clearSearch());
+  // ------------------------------------------------------------------
+  // Client-side filtering (no backend calls for search or category)
+  // ------------------------------------------------------------------
+  const productsToShow = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return allProducts.filter((product) => {
+      // Category filter: only apply when NOT searching (search searches full catalog)
+      if (!query && product.category !== activeCategory) return false;
+
+      // Search filter: match name or description
+      if (query) {
+        const matchesName = product.name.toLowerCase().includes(query);
+        const matchesDesc = product.description.toLowerCase().includes(query);
+        if (!matchesName && !matchesDesc) return false;
       }
-    }, 300);
-    return () => clearTimeout(handle);
-  }, [searchQuery, dispatch]);
+
+      return true;
+    });
+  }, [allProducts, activeCategory, searchQuery]);
+
+  const isSearching = searchQuery.trim().length > 0;
 
   const handleAdd = (product: Product, kitchenObs?: string) => {
     dispatch(addItem({ ...product, quantity: 1, kitchenObs }));
     toast.success(`${product.name} agregado al pedido`);
   };
-
-  const isSearching = searchQuery.trim().length > 0;
-  const productsToShow = isSearching ? searchResults : (itemsByCategory[activeCategory] ?? []);
 
   return (
     <SectionContainer
@@ -55,11 +62,11 @@ export default function ProductosSection() {
       contentClassName="flex-1 flex flex-col min-h-0 p-2.5 overflow-hidden"
     >
       <div className="flex-1 flex flex-col min-h-0 gap-2 overflow-hidden">
-        {/* Requirement: Full catalog search bar */}
+        {/* Requirement: Full catalog search bar (client-side, instant) */}
         <SearchBar
           value={searchQuery}
           onChange={(value) => dispatch(setSearchQuery(value))}
-          placeholder="Buscar en esta categoría..."
+          placeholder="Buscar en toda la carta..."
         />
 
         <div className="flex-1 flex min-h-0 gap-2 overflow-hidden">
@@ -68,7 +75,7 @@ export default function ProductosSection() {
             categories={PRODUCT_CATEGORIES}
             active={activeCategory}
             onSelect={(category) => {
-              if (isSearching) dispatch(setSearchQuery(''));
+              if (isSearching) dispatch(clearSearch());
               dispatch(setActiveCategory(category));
             }}
           />
@@ -79,7 +86,7 @@ export default function ProductosSection() {
             {error && !loading && (
               <ErrorMessage
                 message={error}
-                onRetry={() => dispatch(loadProductsByCategory(activeCategory))}
+                onRetry={() => dispatch(loadProductsByBrand(activeBrand))}
               />
             )}
             {!loading && !error && (
