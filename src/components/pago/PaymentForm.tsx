@@ -36,17 +36,17 @@ export default function PaymentForm({
       (invoiceType === 'factura' && dniValue.length < 11));
 
   return (
-    <div className="flex flex-col gap-2.5 text-xs">
+    <div className="flex flex-col gap-2.5 text-[10px]">
       <div className="flex items-center justify-between">
         <span className="font-semibold text-slate-700">Comprobante:</span>
-        <div className="flex items-center gap-2">
+        <div className="flex rounded-lg border border-slate-300 overflow-hidden">
           <button
             type="button"
             onClick={() => onInvoiceTypeChange('boleta')}
-            className={`rounded-md px-2.5 py-1 text-[11px] font-bold uppercase transition-colors ${
+            className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors ${
               invoiceType === 'boleta'
-                ? 'bg-[#0f172a] text-white'
-                : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                ? 'bg-[#1a1f5e] text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-50'
             }`}
           >
             Boleta
@@ -54,10 +54,10 @@ export default function PaymentForm({
           <button
             type="button"
             onClick={() => onInvoiceTypeChange('factura')}
-            className={`rounded-md px-2.5 py-1 text-[11px] font-bold uppercase transition-colors ${
+            className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors ${
               invoiceType === 'factura'
-                ? 'bg-[#0f172a] text-white'
-                : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-50'
+                ? 'bg-[#1a1f5e] text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-50'
             }`}
           >
             Factura
@@ -67,7 +67,7 @@ export default function PaymentForm({
 
       {/* Requirement: Renombrar el campo DNI por DNI/CE... */}
       <div>
-        <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
+        <label className="block text-[10px] font-semibold text-slate-700 mb-0.5">
           {invoiceType === 'factura' ? 'RUC - Factura' : 'DNI/CE... - Boleta'}
         </label>
         <input
@@ -75,7 +75,7 @@ export default function PaymentForm({
           maxLength={invoiceType === 'factura' ? 11 : 12}
           {...register('dni')}
           placeholder={invoiceType === 'factura' ? '11 dígitos RUC' : '8 dígitos DNI / CE'}
-          className={`w-full rounded-lg border px-2.5 py-1.5 font-medium text-xs focus:outline-none ${
+          className={`w-full rounded-lg border px-2.5 py-1.5 font-medium text-[10px] focus:outline-none ${
             isDniLengthAlert || errors.dni
               ? 'border-amber-500 bg-amber-50/50'
               : 'border-slate-300 focus:border-slate-800'

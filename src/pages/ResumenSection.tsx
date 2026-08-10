@@ -13,7 +13,11 @@ import {
   updateQuantity,
 } from '@/store/slices/cartSlice';
 
-export default function ResumenSection() {
+interface ResumenSectionProps {
+  embedded?: boolean;
+}
+
+export default function ResumenSection({ embedded = false }: ResumenSectionProps) {
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartItems);
   const subtotal = useAppSelector(selectCartSubtotal);
@@ -43,23 +47,8 @@ export default function ResumenSection() {
     toast.success('Observación guardada');
   };
 
-  return (
-    <SectionContainer
-      title="4. RESUMEN PEDIDO"
-      className="border border-slate-200 bg-white rounded-2xl shadow-xs"
-      actions={
-        <button
-          type="button"
-          onClick={handleClearCart}
-          disabled={items.length === 0}
-          className="text-slate-400 hover:text-red-600 disabled:opacity-40 transition-colors"
-          title="Limpiar carrito"
-          aria-label="Limpiar carrito"
-        >
-          <FiTrash2 size={15} />
-        </button>
-      }
-    >
+  const content = (
+    <>
       {/* Table header row matching screenshot: Cant. | Producto | Obs. | Precio */}
       <div className="mb-2 flex items-center justify-between border-b border-slate-200 pb-1 text-[10px] font-bold text-slate-400 uppercase">
         <span className="w-8">Cant.</span>
@@ -69,7 +58,7 @@ export default function ResumenSection() {
       </div>
 
       {items.length === 0 ? (
-        <p className="py-6 text-center text-xs text-slate-400">
+        <p className="py-6 text-center text-[10px] text-slate-400">
           Aún no hay productos en el pedido.
         </p>
       ) : (
@@ -93,6 +82,29 @@ export default function ResumenSection() {
         onClearCart={handleClearCart}
         disabled={items.length === 0}
       />
+    </>
+  );
+
+  if (embedded) return content;
+
+  return (
+    <SectionContainer
+      title="4. RESUMEN PEDIDO"
+      className="border border-slate-200 bg-white rounded-2xl shadow-xs"
+      actions={
+        <button
+          type="button"
+          onClick={handleClearCart}
+          disabled={items.length === 0}
+          className="text-slate-400 hover:text-red-600 disabled:opacity-40 transition-colors"
+          title="Limpiar carrito"
+          aria-label="Limpiar carrito"
+        >
+          <FiTrash2 size={15} />
+        </button>
+      }
+    >
+      {content}
     </SectionContainer>
   );
 }

@@ -28,7 +28,7 @@ export default function CartItemRow({
   };
 
   return (
-    <li className="flex flex-col border-b border-slate-200 py-2 text-xs last:border-b-0">
+    <li className="flex flex-col border-b border-slate-200 py-2 text-[10px] last:border-b-0">
       {/* Top Main Row matching screenshot columns: Cant. | Producto | Obs | Precio */}
       <div className="flex items-start justify-between gap-1.5">
         {/* Cant. Box */}
@@ -48,13 +48,15 @@ export default function CartItemRow({
               {item.name}
             </span>
 
-            {/* Requirement: Show blue info icon if appliesManagerDiscount is true */}
-            {item.appliesManagerDiscount !== false && (
+            {/* Info icon for manager discount */}
+            {item.appliesManagerDiscount && (
               <span
-                title="Aplica Descuento Gerencial"
-                className="ml-1 inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-xs bg-blue-500 text-[9px] font-bold text-white"
+                className="ml-1 text-[12px] cursor-help leading-none shrink-0"
+                role="img"
+                title="Sí aplica para descuento gerencial"
+                aria-label="Información de descuento"
               >
-                i
+                ℹ️
               </span>
             )}
           </div>
@@ -62,7 +64,7 @@ export default function CartItemRow({
 
         {/* Price & Actions: Increment/Decrement & Individual Remove (X) */}
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="font-bold text-slate-800 text-xs">
+          <span className="font-bold text-slate-800">
             S/ {(item.price * item.quantity).toFixed(2)}
           </span>
 
@@ -100,7 +102,7 @@ export default function CartItemRow({
 
       {/* Options Hierarchy breakdown matching screenshot */}
       {item.options && item.options.length > 0 && (
-        <div className="ml-8 mt-1 flex flex-col gap-1 text-[11px] text-slate-600">
+        <div className="ml-8 mt-1 flex flex-col gap-1 text-[10px] text-slate-600">
           {item.options.map((opt, idx) => (
             <div key={idx} className="flex flex-col">
               <span className="font-semibold text-slate-700">{opt.category}</span>

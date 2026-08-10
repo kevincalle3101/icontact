@@ -22,7 +22,11 @@ import {
 } from '@/store/slices/uiSlice';
 import type { InvoiceType as InvoiceTypeValue } from '@/types';
 
-export default function PagoSection() {
+interface PagoSectionProps {
+  embedded?: boolean;
+}
+
+export default function PagoSection({ embedded = false }: PagoSectionProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const items = useAppSelector(selectCartItems);
@@ -105,90 +109,123 @@ export default function PagoSection() {
     navigate('/cliente');
   };
 
-  return (
+  const pagoFormBody = (
     <>
-      <SectionContainer
-        title="5. DETALLE DE PAGO"
-        className="border border-slate-200 bg-white rounded-2xl shadow-xs"
-        actions={
-          /* Desc. Gerencial button matching screenshot top right badge */
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            Medio de pago:
+          </h3>
           <button
             type="button"
             onClick={() => dispatch(toggleManagerDiscount())}
             className={`rounded-md px-2 py-1 text-[10px] font-bold tracking-tight uppercase transition-colors ${
               payment.managerDiscountApplied
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-[#0f172a] text-white hover:bg-slate-800'
+                ? 'bg-[#1a1f5e] text-white shadow-xs'
+                : 'bg-[#1a1f5e] text-white hover:bg-[#252b7a]'
             }`}
           >
             {payment.managerDiscountApplied ? 'Desc. Activo (10%)' : 'Desc. Gerencial'}
           </button>
-        }
-      >
-        <form className="flex flex-col gap-3" onSubmit={onSubmit} aria-label="Formulario de pago">
-          <div>
-            <h3 className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              Medio de pago:
-            </h3>
-            {/* Payment method selector: Soles, Dólares, Tarjeta o Yape */}
-            <PaymentMethod
-              value={payment.method}
-              onChange={(v) => {
-                dispatch(setPaymentMethod(v));
-                if (v === 'usd' && payment.amount >= 100) {
-                  toast.info('Se acepta hasta la denominación de $ 50.00');
-                }
-              }}
-            />
+        </div>
+        <PaymentMethod
+          value={payment.method}
+          onChange={(v) => {
+            dispatch(setPaymentMethod(v));
+            if (v === 'usd' && payment.amount >= 100) {
+              toast.info('Se acepta hasta la denominación de $ 50.00');
+            }
+          }}
+        />
+      </div>
+
+      <AmountInput
+        value={payment.amount}
+        total={total}
+        currencySymbol={payment.method === 'usd' ? '$' : 'S/'}
+        onChange={handleAmountChange}
+        disabled={payment.exactPayment}
+      />
+
+      <ExactPaymentCheckbox
+        checked={payment.exactPayment}
+        onChange={handleExactPaymentToggle}
+      />
+
+      <PaymentForm
+        register={register}
+        watch={watch}
+        setValue={setValue}
+        errors={errors}
+        invoiceType={payment.invoiceType}
+        onInvoiceTypeChange={(type: InvoiceTypeValue) => dispatch(setInvoiceType(type))}
+      />
+    </>
+  );
+
+  const pagoFormContent = (
+    <form className="flex flex-col gap-3" onSubmit={onSubmit} aria-label="Formulario de pago">
+      {pagoFormBody}
+      <div className="mt-2 flex flex-col items-center gap-2">
+        <button
+          type="submit"
+          disabled={items.length === 0}
+          className={`w-full rounded-xl py-3 text-[14px] font-bold uppercase tracking-wider transition-colors ${
+            items.length === 0
+              ? 'bg-[#c8d6e5] text-white cursor-not-allowed'
+              : 'bg-[#1a1f5e] text-white shadow-sm hover:bg-[#252b7a]'
+          }`}
+        >
+          CONTINUAR
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            dispatch(clearCart());
+            toast.info('Pedido cancelado');
+          }}
+          className="text-[10px] font-semibold text-slate-500 underline hover:text-slate-800"
+        >
+          Cancelar pedido
+        </button>
+      </div>
+    </form>
+  );
+
+  return (
+    <>
+      {embedded ? (
+        <>
+          <div className="mt-4 border-t border-slate-200 pt-3">
+            <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
+              5. DETALLE DE PAGO
+            </h2>
           </div>
-
-          {/* Amount input with Falta display */}
-          <AmountInput
-            value={payment.amount}
-            total={total}
-            currencySymbol={payment.method === 'usd' ? '$' : 'S/'}
-            onChange={handleAmountChange}
-            disabled={payment.exactPayment}
-          />
-
-          {/* Exact Payment Checkbox */}
-          <ExactPaymentCheckbox
-            checked={payment.exactPayment}
-            onChange={handleExactPaymentToggle}
-          />
-
-          {/* Comprobante & Driver form fields */}
-          <PaymentForm
-            register={register}
-            watch={watch}
-            setValue={setValue}
-            errors={errors}
-            invoiceType={payment.invoiceType}
-            onInvoiceTypeChange={(type: InvoiceTypeValue) => dispatch(setInvoiceType(type))}
-          />
-
-          {/* Submit button: CONTINUAR */}
-          <div className="mt-2 flex flex-col items-center gap-2">
-            <button
-              type="submit"
-              disabled={items.length === 0}
-              className="w-full rounded-xl bg-[#1a1f5e] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-[#252b7a] disabled:opacity-50"
-            >
-              CONTINUAR
-            </button>
+          <form id="pago-form" className="flex flex-col gap-3" onSubmit={onSubmit} aria-label="Formulario de pago">
+            {pagoFormBody}
+          </form>
+        </>
+      ) : (
+        <SectionContainer
+          title="5. DETALLE DE PAGO"
+          className="border border-slate-200 bg-white rounded-2xl shadow-xs"
+          actions={
             <button
               type="button"
-              onClick={() => {
-                dispatch(clearCart());
-                toast.info('Pedido cancelado');
-              }}
-              className="text-xs font-semibold text-slate-500 underline hover:text-slate-800"
+              onClick={() => dispatch(toggleManagerDiscount())}
+              className={`rounded-md px-2 py-1 text-[10px] font-bold tracking-tight uppercase transition-colors ${
+                payment.managerDiscountApplied
+                  ? 'bg-[#1a1f5e] text-white shadow-xs'
+                  : 'bg-[#1a1f5e] text-white hover:bg-[#252b7a]'
+              }`}
             >
-              Cancelar pedido
+              {payment.managerDiscountApplied ? 'Desc. Activo (10%)' : 'Desc. Gerencial'}
             </button>
-          </div>
-        </form>
-      </SectionContainer>
+          }
+        >
+          {pagoFormContent}
+        </SectionContainer>
+      )}
 
       {/* Confirmation Modal (Sección Mensaje de Despedida) */}
       {showConfirmationModal && (
@@ -197,10 +234,10 @@ export default function PagoSection() {
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
               <FiCheckCircle size={28} />
             </div>
-            <h3 className="text-base font-bold text-slate-900 uppercase">
+            <h3 className="text-[13px] font-bold text-slate-900 uppercase">
               ¡Pedido Listo para Confirmar!
             </h3>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-[10px] text-slate-500">
               Revise el resumen final del pedido antes de enviar a cocina.
             </p>
 
