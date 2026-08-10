@@ -32,33 +32,53 @@ export default function ProductCard({ product, onAdd, compact = false }: Product
         {/* Text and Info Area */}
         <div className="flex flex-1 flex-col justify-between">
           <div>
-            <h3 className="text-[11px] font-bold uppercase text-[#0b1021] leading-tight truncate">
+            <h3 className="text-[10px] font-bold uppercase text-[#1a1f5e] leading-tight truncate">
               {product.name}
             </h3>
             {!compact && (
-              <div className="mt-0.5 flex items-center justify-between gap-1">
-                <p className="text-[10px] text-slate-400 leading-tight truncate flex-1">
+              <div className="mt-0.5">
+                <p className="text-[9px] text-slate-400 leading-tight truncate">
                   {product.description}
                 </p>
-                {/* Requirement: Blue/Gray info icon for manager discount / details */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowObsModal(true);
-                  }}
-                  title="Ver detalle / Observación cocina"
-                  className="inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-xs bg-[#64748b] text-[9px] font-bold text-white hover:opacity-80 transition-opacity"
-                >
-                  i
-                </button>
+                {/* Info icon with tooltip for manager discount, placed below description */}
+                <div className="mt-0.5 flex items-center">
+                  {product.appliesManagerDiscount ? (
+                    <div className="relative group">
+                      <span
+                        className="text-[12px] cursor-help leading-none"
+                        role="img"
+                        aria-label="Información de descuento"
+                      >
+                        ℹ️
+                      </span>
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:block z-10">
+                        <div className="whitespace-nowrap rounded-md bg-slate-800 px-2.5 py-1.5 text-[9px] font-medium text-white shadow-lg">
+                          Sí aplica para descuento gerencial
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowObsModal(true);
+                      }}
+                      title="Ver detalle / Observación cocina"
+                      className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-xs bg-[#64748b] text-[9px] font-bold text-white hover:opacity-80 transition-opacity"
+                    >
+                      i
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
 
           {/* Bottom Price & Add Button Row */}
           <div className="mt-2 flex items-center justify-between">
-            <span className="text-xs font-bold text-[#e4002b]">S/ {product.price.toFixed(2)}</span>
+            <span className="text-[12px] font-bold text-[#e4002b]">S/ {product.price.toFixed(2)}</span>
             <button
               type="button"
               onClick={() => onAdd(product)}

@@ -24,11 +24,11 @@ export default function SectionContainer({
         className,
       )}
     >
-      <header className="flex items-center justify-between border-b border-slate-200 px-4 py-2.5">
-        <h2 className="text-xs font-bold uppercase tracking-wide text-slate-700">{title}</h2>
+      <header className="flex items-center justify-between px-3 pt-3 pb-2">
+        <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">{title}</h2>
         {actions && <div className="flex items-center gap-2">{actions}</div>}
       </header>
-      <div className={clsx('flex-1 p-4', contentClassName)}>{children}</div>
+      <div className={clsx('flex-1 px-3 pb-3', contentClassName)}>{children}</div>
     </section>
   );
 }

@@ -59,7 +59,7 @@ export default function ProductosSection() {
     <SectionContainer
       title="2. CARTA - PRODUCTOS"
       className="flex-1 flex flex-col min-h-0 border border-slate-200 bg-white rounded-2xl shadow-xs overflow-hidden"
-      contentClassName="flex-1 flex flex-col min-h-0 p-2.5 overflow-hidden"
+      contentClassName="flex-1 flex flex-col min-h-0 px-3 pb-3 overflow-hidden"
     >
       <div className="flex-1 flex flex-col min-h-0 gap-2 overflow-hidden">
         {/* Requirement: Full catalog search bar (client-side, instant) */}

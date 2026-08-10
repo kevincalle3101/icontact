@@ -47,27 +47,42 @@ export default function SuggestedProducts({ products, onAdd }: SuggestedProducts
               {product.emoji}
             </div>
             <div>
-              <h3 className="text-[10px] font-bold text-slate-800 leading-tight truncate max-w-[100px]">
+              <h3 className="text-[9px] font-bold text-[#555555] leading-tight truncate max-w-[100px]">
                 {product.name}
               </h3>
-              <p className="text-[10px] font-bold text-slate-900 mt-0.5">
+              <p className="text-[9px] text-[#555555] mt-0.5">
                 + S/ {product.price.toFixed(2)}
               </p>
             </div>
 
-            {/* Requirement: Blue info icon indicating manager discount applies */}
-            <div className="mt-1 flex items-center justify-center gap-1.5">
-              <span
-                title="Aplica Descuento Gerencial"
-                className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-xs bg-blue-500 text-[9px] font-bold text-white"
-              >
-                i
-              </span>
+            {/* Info icon with tooltip for manager discount */}
+            <div className="mt-1 flex flex-col items-center gap-1">
+              {product.appliesManagerDiscount ? (
+                <div className="relative group">
+                  <span
+                    className="text-[12px] cursor-help leading-none"
+                    role="img"
+                    aria-label="Información de descuento"
+                  >
+                    ℹ️
+                  </span>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 hidden group-hover:block z-10">
+                    <div className="whitespace-nowrap rounded-md bg-slate-800 px-2.5 py-1.5 text-[9px] font-medium text-white shadow-lg">
+                      Sí aplica para descuento gerencial
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-xs bg-[#64748b] text-[9px] font-bold text-white">
+                  i
+                </span>
+              )}
               <button
                 type="button"
                 onClick={() => onAdd(product)}
                 aria-label={`Agregar ${product.name} sugerido`}
-                className="flex h-5 w-5 items-center justify-center rounded-full bg-[#1a1f5e] text-white hover:bg-[#252b7a] transition-colors"
+                className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#1a1f5e] text-white hover:bg-[#252b7a] transition-colors"
               >
                 <FiPlus size={11} aria-hidden="true" />
               </button>
