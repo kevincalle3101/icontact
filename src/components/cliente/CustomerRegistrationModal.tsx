@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiX, FiExternalLink, FiCrosshair, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
 import type { AddressItem, Customer } from '@/types';
 
 export const LIMA_DISTRICTS = [
@@ -173,7 +173,7 @@ export default function CustomerRegistrationModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
       // Clicking overlay intentionally does NOT close the modal per requirement:
       // "Al dar click fuera de la ventana no debe salirse de la Ventana, debe mantenerse. Para salir se debe dar click en la 'X'."
       aria-modal="true"
@@ -181,7 +181,7 @@ export default function CustomerRegistrationModal({
     >
       <div
         className={`relative flex w-full flex-col rounded-2xl bg-white shadow-2xl transition-all ${
-          isMapExpanded ? 'max-w-5xl h-[90vh]' : 'max-w-3xl max-h-[92vh]'
+          isMapExpanded ? 'max-w-2xl h-[85vh]' : 'max-w-[520px] max-h-[90vh]'
         } overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -189,13 +189,11 @@ export default function CustomerRegistrationModal({
         <div className="flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3.5">
           <div className="flex flex-col">
             <h2 className="text-lg font-bold text-[#1a1f5e]">Registro de Cliente</h2>
-            <span className="text-[10px] font-bold uppercase text-slate-400">SISTEMA DE REGISTRO</span>
+            <span className="text-[9px] font-bold uppercase text-slate-400">SISTEMA DE REGISTRO</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 text-[#1a1f5e]">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
-              </svg>
+              <span className="text-sm">📞</span>
               <span className="text-sm font-bold">970220065</span>
             </div>
             <button
@@ -210,44 +208,45 @@ export default function CustomerRegistrationModal({
         </div>
 
         {/* Banner */}
-        <div className="mx-5 mt-4 rounded-lg border border-blue-100 bg-blue-50/50 px-4 py-2.5">
-          <div className="flex items-center gap-2.5 text-[11px] text-blue-800">
-            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.99c.029.028.06.053.091.077a6.991 6.991 0 009.404 0 1.206 1.206 0 00.091-.077A5.99 5.99 0 0010 12z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <span className="font-medium">Editando cliente existente. Al guardar se actualizarán sus datos.</span>
+        <div
+          className="mx-5 mt-4 rounded-lg bg-[#EEF2FF] px-4 py-2.5"
+          style={{ border: '1.5px solid rgb(200, 212, 240)' }}
+        >
+          <div className="flex items-center gap-1.5 text-blue-800">
+            <span className="shrink-0 leading-none">👤</span>
+            <span className="text-[11px] font-medium">Editando cliente existente. Al guardar se actualizarán sus datos.</span>
           </div>
         </div>
 
         {/* Modal Body */}
         <div className="flex-1 overflow-y-auto p-5 scrollbar-thin">
           {/* DATOS DEL CLIENTE */}
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2 text-slate-500">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
-              <h3 className="text-[11px] font-bold uppercase tracking-wide">DATOS DEL CLIENTE</h3>
+          <div className="flex flex-col gap-2.5">
+            <div className="flex items-center gap-1.5 text-slate-500">
+              <span
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] leading-none"
+              >
+                👤
+              </span>
+              <h3 className="text-[10px] font-bold uppercase tracking-wide">DATOS DEL CLIENTE</h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 mb-1">DNI <span className="font-normal">(Opcional)</span></label>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">DNI <span className="font-normal">(Opcional)</span></label>
                 <input
                   type="text"
                   value={dni}
                   onChange={(e) => setDni(e.target.value)}
                   maxLength={8}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 mb-1">Clase</label>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">Clase</label>
                 <div className="relative">
                   <select
-                    className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-100"
+                    className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-100"
                     value="Gold"
                     disabled
                   >
@@ -263,12 +262,12 @@ export default function CustomerRegistrationModal({
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-slate-500 mb-1">Nombres <span className="text-red-500">*</span></label>
+              <label className="block text-[10px] font-bold text-[#666666] mb-1">Nombres <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className={`w-full rounded-lg border px-3 py-2 text-[11px] font-medium focus:outline-none transition-colors ${
+                className={`w-full rounded-lg border px-2.5 py-1.5 text-[11px] font-medium focus:outline-none transition-colors ${
                   errors.firstName ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-slate-50/50 focus:border-[#1a1f5e]'
                 }`}
               />
@@ -277,45 +276,43 @@ export default function CustomerRegistrationModal({
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 mb-1">Apellido Paterno <span className="text-red-500">*</span></label>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">Apellido Paterno <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   value={paterno}
                   onChange={(e) => setPaterno(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 mb-1">Apellido Materno <span className="font-normal">(Opcional)</span></label>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">Apellido Materno <span className="font-normal">(Opcional)</span></label>
                 <input
                   type="text"
                   value={materno}
                   onChange={(e) => setMaterno(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                 />
               </div>
             </div>
           </div>
 
           {/* DIRECCIONES */}
-          <div className="mt-5 flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-red-500">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
-              </svg>
-              <h3 className="text-[11px] font-bold uppercase tracking-wide">DIRECCIONES</h3>
+          <div className="mt-5 flex flex-col gap-2.5">
+            <div className="flex items-center gap-1.5 text-red-500">
+              <span className="text-xs">📍</span>
+              <h3 className="text-[10px] font-bold uppercase tracking-wide">DIRECCIONES</h3>
             </div>
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {/* Left side: Address form fields */}
-              <div className="flex flex-col gap-3">
-                <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-2.5">
+                <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1">Provincia <span className="text-red-500">*</span></label>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Provincia <span className="text-red-500">*</span></label>
                     <div className="relative">
-                      <select defaultValue="Lima" className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors">
+                      <select defaultValue="Lima" className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors">
                         <option value="">Seleccione provincia</option>
                         <option value="Lima">Lima</option>
                       </select>
@@ -327,12 +324,12 @@ export default function CustomerRegistrationModal({
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1">Distrito <span className="text-red-500">*</span></label>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Distrito <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <select
                         value={district}
                         onChange={(e) => setDistrict(e.target.value)}
-                        className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                        className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                       >
                         <option value="">Seleccione distrito</option>
                         {LIMA_DISTRICTS.map((d) => (
@@ -350,31 +347,31 @@ export default function CustomerRegistrationModal({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2.5">
                   <div className="col-span-2">
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1">Dirección (Calle / Av.) <span className="text-red-500">*</span></label>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Dirección (Calle / Av.) <span className="text-red-500">*</span></label>
                     <input
                       type="text"
                       value={address}
                       onChange={(e) => handleAddressChange(e.target.value)}
                       placeholder="Dirección principal"
-                      className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                      className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 mb-1">Nro/Mz</label>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Nro/Mz</label>
                     <input
                       type="text"
                       value={number}
                       onChange={(e) => handleNumberChange(e.target.value)}
                       placeholder="Nro/Mz"
-                      className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                      className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-500 mb-1">Dpto / Interior <span className="text-red-500">*</span></label>
+                  <label className="block text-[10px] font-bold text-[#666666] mb-1">Dpto / Interior <span className="text-red-500">*</span></label>
                   <input
                     type="text"
                     value={department}
@@ -383,40 +380,40 @@ export default function CustomerRegistrationModal({
                       if (errors.department) setErrors((prev) => ({ ...prev, department: undefined }));
                     }}
                     placeholder="Dpto, piso, interior..."
-                    className={`w-full rounded-lg border px-3 py-2 text-[11px] font-medium focus:outline-none transition-colors ${
+                    className={`w-full rounded-lg border px-2.5 py-1.5 text-[11px] font-medium focus:outline-none transition-colors ${
                       errors.department ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-slate-50/50 focus:border-[#1a1f5e]'
                     }`}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-500 mb-1">Referencia</label>
+                  <label className="block text-[10px] font-bold text-[#666666] mb-1">Referencia</label>
                   <input
                     type="text"
                     value={reference}
                     onChange={(e) => setReference(e.target.value)}
                     placeholder="Cerca de..."
-                    className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                    className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                   />
                 </div>
               </div>
 
               {/* Right side: Map */}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-slate-500">Buscar en el mapa</span>
+                  <span className="text-[10px] font-bold text-[#666666]">Buscar en el mapa</span>
                   <button
                     type="button"
                     onClick={() => setIsMapExpanded((v) => !v)}
-                    className="flex items-center gap-1 text-[10px] font-bold text-[#1a1f5e] hover:underline"
+                    className="flex items-center gap-1 text-[9px] font-bold text-[#1a1f5e] hover:underline"
                   >
-                    <FiExternalLink size={12} />
+                    <span>↗</span>
                     Expandir
                   </button>
                 </div>
 
                 {/* Map search box */}
-                <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[11px]">
+                <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px]">
                   <input
                     type="text"
                     value={mapSearch}
@@ -428,7 +425,7 @@ export default function CustomerRegistrationModal({
                     type="button"
                     className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#1a1f5e] text-white"
                   >
-                    <FiCrosshair size={12} />
+                    <span className="text-[10px]">🎯</span>
                   </button>
                 </div>
 
@@ -445,7 +442,7 @@ export default function CustomerRegistrationModal({
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">LAT</label>
                     <input type="text" value={lat} readOnly className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 focus:outline-none" />
@@ -458,12 +455,9 @@ export default function CustomerRegistrationModal({
 
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 rounded-lg bg-[#c7d1e0] py-2 text-[11px] font-bold text-white transition-colors hover:bg-[#b1bdcf]"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-[#c7d1e0] py-2 text-[10px] font-bold text-white transition-colors hover:bg-[#b1bdcf]"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                    <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                  </svg>
-                  Guardar Dirección
+                  💾 Guardar Dirección
                 </button>
               </div>
             </div>
@@ -472,11 +466,11 @@ export default function CustomerRegistrationModal({
           {/* Registered Addresses Table */}
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[11px] font-bold uppercase tracking-wide text-slate-400">DIRECCIONES REGISTRADAS</h3>
-              <span className="text-[10px] font-bold text-slate-400">{addresses.length} dirección(es)</span>
+              <h3 className="text-[10px] font-bold uppercase tracking-wide text-slate-400">DIRECCIONES REGISTRADAS</h3>
+              <span className="text-[9px] font-bold text-slate-400">{addresses.length} dirección(es)</span>
             </div>
             <div className="rounded-xl border border-slate-100 overflow-hidden">
-              <table className="w-full text-left text-[11px]">
+              <table className="w-full text-left text-[10px]">
                 <thead className="bg-slate-50 text-slate-400 font-bold uppercase">
                   <tr>
                     <th className="px-4 py-2">Dirección</th>
@@ -498,9 +492,9 @@ export default function CustomerRegistrationModal({
                             onClick={() => handleSelectSavedAddress(item)}
                             className="text-amber-500 hover:text-amber-600"
                           >
-                            <FiEdit2 size={14} />
+                            ✏️
                           </button>
-                          <button type="button" className="text-slate-300 hover:text-red-500"><FiTrash2 size={14} /></button>
+                          <button type="button" className="text-slate-300 hover:text-red-500">🗑️</button>
                         </div>
                       </td>
                     </tr>
@@ -512,11 +506,11 @@ export default function CustomerRegistrationModal({
 
           {/* Tipo de Registro */}
           <div className="mt-6">
-            <h3 className="text-[11px] font-bold uppercase tracking-wide text-slate-400 mb-3">🏠 TIPO DE REGISTRO</h3>
+            <h3 className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-3">🏠 TIPO DE REGISTRO</h3>
             <div className="flex gap-3">
               <label className="flex-1 cursor-pointer">
                 <input type="radio" name="regType" className="hidden peer" defaultChecked />
-                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[11px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
+                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[10px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
                   <div className="h-4 w-4 rounded-full border-2 border-current flex items-center justify-center">
                     <div className="h-2 w-2 rounded-full bg-current opacity-0 peer-checked:opacity-100" />
                   </div>
@@ -525,7 +519,7 @@ export default function CustomerRegistrationModal({
               </label>
               <label className="flex-1 cursor-pointer">
                 <input type="radio" name="regType" className="hidden peer" />
-                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[11px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
+                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[10px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
                   <div className="h-4 w-4 rounded-full border-2 border-current flex items-center justify-center">
                     <div className="h-2 w-2 rounded-full bg-current opacity-0 peer-checked:opacity-100" />
                   </div>
