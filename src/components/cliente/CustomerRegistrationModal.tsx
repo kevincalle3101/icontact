@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiX, FiMapPin, FiMaximize2, FiMinimize2, FiSearch, FiCheck } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
 import type { AddressItem, Customer } from '@/types';
 
 export const LIMA_DISTRICTS = [
@@ -21,20 +21,6 @@ export const LIMA_DISTRICTS = [
   'Los Olivos',
 ];
 
-const PREDICTIVE_ADDRESS_SUGGESTIONS = [
-  'Avenida Javier Prado Oeste',
-  'Avenida Javier Prado Este',
-  'Avenida Arequipa',
-  'Avenida Paseo de la República',
-  'Avenida Conquistadores',
-  'Avenida Camino Real',
-  'Avenida Larco',
-  'Avenida José Pardo',
-  'Avenida Benavides',
-  'Avenida Brasil',
-  'Avenida Primavera',
-];
-
 interface CustomerRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -53,7 +39,10 @@ export default function CustomerRegistrationModal({
   const [phone, setPhone] = useState(customer?.phone || '');
   const [refCode, setRefCode] = useState(customer?.refCode || '');
   const [firstName, setFirstName] = useState(customer?.firstName || '');
-  const [lastName, setLastName] = useState(customer?.lastName || '');
+  const [paterno, setPaterno] = useState(customer?.lastName?.split(' ')[0] || '');
+  const [materno, setMaterno] = useState(
+    customer?.lastName?.split(' ').slice(1).join(' ') || '',
+  );
   const [dni, setDni] = useState(customer?.dni || '');
   const [address, setAddress] = useState(customer?.address || '');
   const [number, setNumber] = useState(customer?.number || '');
@@ -61,14 +50,11 @@ export default function CustomerRegistrationModal({
   const [department, setDepartment] = useState(customer?.department || '');
   const [reference, setReference] = useState(customer?.reference || '');
 
-  // Predictive search state
-  const [addressSuggestions, setAddressSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-
   // Map state
   const [mapSearch, setMapSearch] = useState('');
   const [isMapExpanded, setIsMapExpanded] = useState(false);
-  const [pinPos, setPinPos] = useState({ x: 50, y: 50 }); // % coordinates on mock map
+  const [lat] = useState(-12.0464);
+  const [lng] = useState(-77.0428);
 
   // Address selection state
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -100,7 +86,8 @@ export default function CustomerRegistrationModal({
       setPhone(customer.phone);
       setRefCode(customer.refCode || '');
       setFirstName(customer.firstName);
-      setLastName(customer.lastName);
+      setPaterno(customer.lastName.split(' ')[0] || '');
+      setMaterno(customer.lastName.split(' ').slice(1).join(' '));
       setDni(customer.dni);
       setAddress(customer.address);
       setNumber(customer.number || '');
@@ -115,26 +102,11 @@ export default function CustomerRegistrationModal({
   const handleAddressChange = (val: string) => {
     setAddress(val);
     setMapSearch(`${val} ${number}`.trim());
-    if (val.trim().length > 2) {
-      const filtered = PREDICTIVE_ADDRESS_SUGGESTIONS.filter((item) =>
-        item.toLowerCase().includes(val.toLowerCase()),
-      );
-      setAddressSuggestions(filtered);
-      setShowSuggestions(true);
-    } else {
-      setShowSuggestions(false);
-    }
   };
 
   const handleNumberChange = (val: string) => {
     setNumber(val);
     setMapSearch(`${address} ${val}`.trim());
-  };
-
-  const selectSuggestion = (sug: string) => {
-    setAddress(sug);
-    setMapSearch(`${sug} ${number}`.trim());
-    setShowSuggestions(false);
   };
 
   const handleSelectSavedAddress = (item: AddressItem) => {
@@ -165,6 +137,7 @@ export default function CustomerRegistrationModal({
     if (customer) {
       const updatedAddress = address;
       const updatedNumber = number;
+      const combinedLastName = `${paterno} ${materno}`.trim();
 
       // Update addresses list if needed
       const updatedAddresses = addresses.map((addr) =>
@@ -185,7 +158,7 @@ export default function CustomerRegistrationModal({
         phone,
         refCode,
         firstName,
-        lastName,
+        lastName: combinedLastName,
         dni,
         address: updatedAddress,
         number: updatedNumber,
@@ -198,17 +171,9 @@ export default function CustomerRegistrationModal({
     onClose();
   };
 
-  // Map drag pin handler
-  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setPinPos({ x: Math.max(10, Math.min(90, x)), y: Math.max(10, Math.min(90, y)) });
-  };
-
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
       // Clicking overlay intentionally does NOT close the modal per requirement:
       // "Al dar click fuera de la ventana no debe salirse de la Ventana, debe mantenerse. Para salir se debe dar click en la 'X'."
       aria-modal="true"
@@ -216,317 +181,359 @@ export default function CustomerRegistrationModal({
     >
       <div
         className={`relative flex w-full flex-col rounded-2xl bg-white shadow-2xl transition-all ${
-          isMapExpanded ? 'max-w-5xl h-[90vh]' : 'max-w-3xl max-h-[92vh]'
+          isMapExpanded ? 'max-w-2xl h-[85vh]' : 'max-w-[520px] max-h-[90vh]'
         } overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 bg-[#0f172a] px-5 py-3.5 text-white">
-          <div className="flex items-center gap-2">
-            <FiMapPin className="text-red-400" />
-            <h2 className="text-sm font-bold uppercase tracking-wider">
-              Registro / Actualización de Cliente
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-            aria-label="Cerrar ventana"
-          >
-            <FiX size={18} />
-          </button>
-        </div>
-
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-5 scrollbar-thin">
-          {/* Saved addresses selector if multiple */}
-          {addresses.length > 0 && (
-            <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <span className="text-xs font-bold uppercase text-slate-600">
-                Direcciones Registradas:
-              </span>
-              <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {addresses.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelectSavedAddress(item)}
-                    className={`flex items-start justify-between rounded-lg border p-2.5 text-left text-xs transition-colors ${
-                      selectedAddressId === item.id ||
-                      (address === item.address && number === item.number)
-                        ? 'border-blue-600 bg-blue-50 text-blue-900 font-medium'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
-                    }`}
-                  >
-                    <div>
-                      <p className="font-bold">
-                        {item.address} {item.number}
-                      </p>
-                      <p className="text-[11px] text-slate-500">
-                        {item.district} - {item.department} ({item.reference})
-                      </p>
-                    </div>
-                    {(selectedAddressId === item.id ||
-                      (address === item.address && number === item.number)) && (
-                      <FiCheck className="shrink-0 text-blue-600 mt-0.5" />
-                    )}
-                  </button>
-                ))}
-              </div>
+        <div className="flex-1 overflow-y-auto px-3.5 py-3 scrollbar-thin">
+          {/* Title */}
+          <div className="mb-3 flex items-start justify-between">
+            <div className="flex flex-col">
+              <h2 className="text-[15px] font-bold text-[#1a1f5e]">Registro de Cliente</h2>
+              <span className="text-[10px] font-bold uppercase text-slate-400">SISTEMA DE REGISTRO</span>
             </div>
-          )}
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {/* Left side: Form fields */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-xs font-bold uppercase text-slate-700">Datos Personales</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600">Teléfono</label>
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium focus:border-blue-600 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600">TLF REF</label>
-                  <input
-                    type="text"
-                    value={refCode}
-                    onChange={(e) => setRefCode(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium focus:border-blue-600 focus:outline-none"
-                    placeholder="Ref. Teléfono"
-                  />
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5 text-[#1a1f5e]">
+                <span className="text-sm">📞</span>
+                <span className="text-sm font-bold text-[#333333] text-[12px]">970220065</span>
               </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+                aria-label="Cerrar ventana"
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+          </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600">Nombres</label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className={`w-full rounded-lg border px-3 py-1.5 text-xs font-medium focus:outline-none ${
-                      errors.firstName ? 'border-red-500' : 'border-slate-300 focus:border-blue-600'
-                    }`}
-                  />
-                  {errors.firstName && (
-                    <p className="mt-0.5 text-[10px] text-red-500">{errors.firstName}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600">Apellidos</label>
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium focus:border-blue-600 focus:outline-none"
-                  />
-                </div>
-              </div>
+          {/* Banner */}
+          <div
+            className="mb-3 rounded-lg bg-[#EEF2FF] px-3 py-2"
+            style={{ border: '1.5px solid rgb(200, 212, 240)' }}
+          >
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-medium text-[#1A1F5E]">👤 Editando cliente existente. Al guardar se actualizarán sus datos.</span>
+            </div>
+          </div>
 
+          {/* DATOS DEL CLIENTE */}
+          <div className="flex flex-col gap-2.5">
+            <div className="flex items-center gap-1.5 text-slate-500">
+              <h3 className="text-[10px] font-bold uppercase tracking-wide">👤 DATOS DEL CLIENTE</h3>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block text-[11px] font-semibold text-slate-600">DNI</label>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">DNI <span className="font-normal">(Opcional)</span></label>
                 <input
                   type="text"
                   value={dni}
                   onChange={(e) => setDni(e.target.value)}
                   maxLength={8}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium focus:border-blue-600 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                 />
               </div>
-
-              <h3 className="mt-2 text-xs font-bold uppercase text-slate-700">
-                Dirección de Entrega
-              </h3>
-
-              {/* Predictive Address Search Field */}
-              <div className="relative">
-                <label className="block text-[11px] font-semibold text-slate-600">
-                  Dirección (Sugerencias predictivas)
-                </label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => handleAddressChange(e.target.value)}
-                  onFocus={() => address.length > 2 && setShowSuggestions(true)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium focus:border-blue-600 focus:outline-none"
-                  placeholder="Ej: Av. Javier Prado..."
-                />
-                {showSuggestions && addressSuggestions.length > 0 && (
-                  <ul className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-lg text-xs">
-                    {addressSuggestions.map((sug, idx) => (
-                      <li key={idx}>
-                        <button
-                          type="button"
-                          onClick={() => selectSuggestion(sug)}
-                          className="w-full px-3 py-1.5 text-left hover:bg-slate-100 font-medium text-slate-700"
-                        >
-                          📍 {sug}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {/* Renamed Nro to Nro/Mz */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600">Nro/Mz</label>
-                  <input
-                    type="text"
-                    value={number}
-                    onChange={(e) => handleNumberChange(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium focus:border-blue-600 focus:outline-none"
-                    placeholder="1650 / Mz A"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600">Distrito</label>
+              <div>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">Clase</label>
+                <div className="relative">
                   <select
-                    value={district}
-                    onChange={(e) => setDistrict(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium focus:border-blue-600 focus:outline-none bg-white"
+                    className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-100"
+                    value="Gold"
+                    disabled
                   >
-                    {LIMA_DISTRICTS.map((d) => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
-                    ))}
+                    <option value="Gold">Gold</option>
                   </select>
-                </div>
-              </div>
-
-              {/* Dpto/Interior as Mandatory */}
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600">
-                  Dpto/Interior <span className="text-red-500">* (Obligatorio)</span>
-                </label>
-                <input
-                  type="text"
-                  value={department}
-                  onChange={(e) => {
-                    setDepartment(e.target.value);
-                    if (errors.department) setErrors((prev) => ({ ...prev, department: undefined }));
-                  }}
-                  className={`w-full rounded-lg border px-3 py-1.5 text-xs font-medium focus:outline-none ${
-                    errors.department ? 'border-red-500' : 'border-slate-300 focus:border-blue-600'
-                  }`}
-                  placeholder="Block C / Dpto 201"
-                />
-                {errors.department && (
-                  <p className="mt-0.5 text-[10px] text-red-500">{errors.department}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600">Referencia</label>
-                <input
-                  type="text"
-                  value={reference}
-                  onChange={(e) => setReference(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium focus:border-blue-600 focus:outline-none"
-                  placeholder="CRC AV LAS FLORES"
-                />
-              </div>
-            </div>
-
-            {/* Right side: Interactive Map with Draggable Pin */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold uppercase text-slate-700">
-                  Ubicación en Mapa
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setIsMapExpanded((v) => !v)}
-                  className="flex items-center gap-1 rounded-md border border-slate-300 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-600 hover:bg-slate-100"
-                >
-                  {isMapExpanded ? <FiMinimize2 /> : <FiMaximize2 />}
-                  {isMapExpanded ? 'Reducir Mapa' : 'Ampliar Mapa'}
-                </button>
-              </div>
-
-              {/* Map search display */}
-              <div className="flex items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 px-2.5 py-1.5 text-xs">
-                <FiSearch className="text-slate-400" />
-                <span className="font-medium text-slate-600 truncate">
-                  Buscar en el mapa: {mapSearch || 'Ingrese dirección y número'}
-                </span>
-              </div>
-
-              {/* Map container with draggable pin */}
-              <div
-                className={`relative w-full rounded-xl border border-slate-300 bg-[#e5e9f0] overflow-hidden cursor-crosshair transition-all ${
-                  isMapExpanded ? 'h-96' : 'h-64'
-                }`}
-                onClick={handleMapClick}
-                title="Haga clic o arrastre el pin para cambiar la ubicación"
-              >
-                {/* Mock OpenStreetMap background tiles / grid */}
-                <div
-                  className="absolute inset-0 opacity-40"
-                  style={{
-                    backgroundImage:
-                      'radial-gradient(#94a3b8 1px, transparent 1px), radial-gradient(#94a3b8 1px, #e2e8f0 1px)',
-                    backgroundSize: '20px 20px',
-                    backgroundPosition: '0 0, 10px 10px',
-                  }}
-                />
-                {/* Simulated streets */}
-                <div className="absolute top-1/2 left-0 right-0 h-4 bg-white/80 border-y border-slate-300 -translate-y-1/2" />
-                <div className="absolute left-1/3 top-0 bottom-0 w-4 bg-white/80 border-x border-slate-300" />
-                <div className="absolute left-2/3 top-0 bottom-0 w-3 bg-white/80 border-x border-slate-300" />
-
-                {/* Map labels */}
-                <div className="absolute top-3 left-3 rounded bg-white/90 px-2 py-1 text-[10px] font-bold text-slate-700 shadow-xs">
-                  {district}
-                </div>
-                <div className="absolute bottom-2 right-2 text-[9px] text-slate-500 bg-white/80 px-1 rounded">
-                  OpenStreetMap contributors
-                </div>
-
-                {/* Draggable Pin Marker */}
-                <div
-                  className="absolute -translate-x-1/2 -translate-y-full transition-transform cursor-grab active:cursor-grabbing hover:scale-110"
-                  style={{ left: `${pinPos.x}%`, top: `${pinPos.y}%` }}
-                >
-                  <div className="flex flex-col items-center">
-                    <div className="rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-md">
-                      📍 {address || 'Cliente'} {number}
-                    </div>
-                    <div className="h-2 w-2 rotate-45 bg-red-600 -mt-1" />
-                    <div className="h-2 w-2 rounded-full bg-red-800/40 blur-xs" />
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                      <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                    </svg>
                   </div>
                 </div>
               </div>
-              <p className="text-[10px] text-slate-500 text-center">
-                * Haga clic en el mapa para ubicar el Pin exacto en la dirección del cliente.
-              </p>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold text-[#666666] mb-1">Nombres <span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className={`w-full rounded-lg border px-2.5 py-1.5 text-[11px] font-medium focus:outline-none transition-colors ${
+                  errors.firstName ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#FAFBFF] focus:border-[#1a1f5e]'
+                }`}
+              />
+              {errors.firstName && (
+                <p className="mt-1 text-[9px] font-medium text-red-500">{errors.firstName}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              <div>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">Apellido Paterno <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  value={paterno}
+                  onChange={(e) => setPaterno(e.target.value)}
+                  className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">Apellido Materno <span className="font-normal">(Opcional)</span></label>
+                <input
+                  type="text"
+                  value={materno}
+                  onChange={(e) => setMaterno(e.target.value)}
+                  className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Modal Footer */}
-        <div className="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-5 py-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
-          >
-            Cancelar
-          </button>
+          {/* DIRECCIONES */}
+          <div className="mt-5 flex flex-col gap-2.5">
+            <div className="flex items-center gap-1.5 text-red-500">
+              <span className="text-xs">📍</span>
+              <h3 className="text-[10px] font-bold uppercase tracking-wide">DIRECCIONES</h3>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              {/* Left side: Address form fields */}
+              <div className="flex flex-col gap-2.5">
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Provincia <span className="text-red-500">*</span></label>
+                    <div className="relative">
+                      <select defaultValue="Lima" className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors">
+                        <option value="">Seleccione provincia</option>
+                        <option value="Lima">Lima</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                          <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Distrito <span className="text-red-500">*</span></label>
+                    <div className="relative">
+                      <select
+                        value={district}
+                        onChange={(e) => setDistrict(e.target.value)}
+                        className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                      >
+                        <option value="">Seleccione distrito</option>
+                        {LIMA_DISTRICTS.map((d) => (
+                          <option key={d} value={d}>
+                            {d}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                          <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2.5">
+                  <div className="col-span-2">
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Dirección (Calle / Av.) <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      value={address}
+                      onChange={(e) => handleAddressChange(e.target.value)}
+                      placeholder="Dirección principal"
+                      className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Nro/Mz</label>
+                    <input
+                      type="text"
+                      value={number}
+                      onChange={(e) => handleNumberChange(e.target.value)}
+                      placeholder="Nro/Mz"
+                      className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-[#666666] mb-1">Dpto / Interior <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    value={department}
+                    onChange={(e) => {
+                      setDepartment(e.target.value);
+                      if (errors.department) setErrors((prev) => ({ ...prev, department: undefined }));
+                    }}
+                    placeholder="Dpto, piso, interior..."
+                    className={`w-full rounded-lg border px-2.5 py-1.5 text-[11px] font-medium focus:outline-none transition-colors ${
+                      errors.department ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#FAFBFF] focus:border-[#1a1f5e]'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-[#666666] mb-1">Referencia</label>
+                  <input
+                    type="text"
+                    value={reference}
+                    onChange={(e) => setReference(e.target.value)}
+                    placeholder="Cerca de..."
+                    className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Right side: Map */}
+              <div className="flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-[#666666]">Buscar en el mapa</span>
+                  <button
+                    type="button"
+                    onClick={() => setIsMapExpanded((v) => !v)}
+                    className="flex items-center gap-1 text-[9px] font-bold text-[#1a1f5e] hover:underline"
+                  >
+                    <span>↗</span>
+                    Expandir
+                  </button>
+                </div>
+
+                {/* Map search box */}
+                <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[9px]">
+                  <input
+                    type="text"
+                    value={mapSearch}
+                    onChange={(e) => setMapSearch(e.target.value)}
+                    placeholder="Buscar en el mapa..."
+                    className="flex-1 bg-transparent text-[9px] text-[#1a1f5e] focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#1a1f5e] text-white"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="white">
+                      <circle cx="12" cy="12" r="4" />
+                      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Map */}
+                <div
+                  className={`relative w-full shrink-0 overflow-hidden rounded-lg transition-all ${
+                    isMapExpanded ? 'h-96' : 'h-[148px]'
+                  }`}
+                  style={{ border: '1.5px solid rgb(208, 216, 240)' }}
+                >
+                  <iframe
+                    title="Mapa de ubicación"
+                    className="h-full w-full border-0"
+                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.006}%2C${lat - 0.004}%2C${lng + 0.006}%2C${lat + 0.004}&layer=mapnik&marker=${lat}%2C${lng}`}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <label className="block text-[8px] font-bold text-slate-400 uppercase mb-1">LAT</label>
+                    <input type="text" value={lat} readOnly className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-3 py-1.5 text-[9px] font-medium text-[#1a1f5e] focus:outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-[8px] font-bold text-slate-400 uppercase mb-1">LONG</label>
+                    <input type="text" value={lng} readOnly className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-3 py-1.5 text-[9px] font-medium text-[#1a1f5e] focus:outline-none" />
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-[#c7d1e0] py-2 text-[10px] font-bold text-white transition-colors hover:bg-[#b1bdcf]"
+                >
+                  💾 Guardar Dirección
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Registered Addresses Table */}
+          <div className="mt-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] font-bold uppercase tracking-wide text-slate-400">DIRECCIONES REGISTRADAS</h3>
+              <span className="text-[9px] font-bold text-slate-400">{addresses.length} dirección(es)</span>
+            </div>
+            <div className="rounded-xl border border-slate-100 overflow-hidden">
+              <table className="w-full text-left text-[10px]">
+                <thead className="bg-slate-50 text-slate-400 font-bold uppercase">
+                  <tr>
+                    <th className="px-4 py-2">Dirección</th>
+                    <th className="px-4 py-2">Distrito</th>
+                    <th className="px-4 py-2">Provincia</th>
+                    <th className="px-4 py-2 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {addresses.map((item) => (
+                    <tr key={item.id} className="hover:bg-[#FAFBFF] transition-colors">
+                      <td className="px-4 py-3 font-bold text-slate-700">{item.address} {item.number}</td>
+                      <td className="px-4 py-3 text-slate-500">{item.district}</td>
+                      <td className="px-4 py-3 text-slate-500">Lima</td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleSelectSavedAddress(item)}
+                            className="text-amber-500 hover:text-amber-600"
+                          >
+                            ✏️
+                          </button>
+                          <button type="button" className="text-slate-300 hover:text-red-500">🗑️</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Tipo de Registro */}
+          <div className="mt-6">
+            <h3 className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-3">🏠 TIPO DE REGISTRO</h3>
+            <div className="flex gap-3">
+              <label className="flex-1 cursor-pointer">
+                <input type="radio" name="regType" className="hidden peer" defaultChecked />
+                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[10px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
+                  <div className="h-4 w-4 rounded-full border-2 border-current flex items-center justify-center">
+                    <div className="h-2 w-2 rounded-full bg-current opacity-0 peer-checked:opacity-100" />
+                  </div>
+                  👨‍👩‍👧 Familia
+                </div>
+              </label>
+              <label className="flex-1 cursor-pointer">
+                <input type="radio" name="regType" className="hidden peer" />
+                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[10px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
+                  <div className="h-4 w-4 rounded-full border-2 border-current flex items-center justify-center">
+                    <div className="h-2 w-2 rounded-full bg-current opacity-0 peer-checked:opacity-100" />
+                  </div>
+                  🏢 Empresa
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Actualizar Cliente */}
           <button
             type="button"
             onClick={handleSaveCustomer}
-            className="rounded-lg bg-[#0f172a] px-5 py-2 text-xs font-semibold text-white hover:bg-slate-800 shadow-sm"
+            className="mt-6 w-full rounded-xl bg-[#1a1f5e] py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252b7a] active:scale-[0.98]"
           >
-            Actualizar cliente
+            💾 Actualizar cliente
           </button>
         </div>
       </div>
