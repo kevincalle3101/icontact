@@ -185,50 +185,44 @@ export default function CustomerRegistrationModal({
         } overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3.5">
-          <div className="flex flex-col">
-            <h2 className="text-lg font-bold text-[#1a1f5e]">Registro de Cliente</h2>
-            <span className="text-[9px] font-bold uppercase text-slate-400">SISTEMA DE REGISTRO</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-[#1a1f5e]">
-              <span className="text-sm">📞</span>
-              <span className="text-sm font-bold">970220065</span>
-            </div>
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-slate-400 hover:text-slate-600 transition-colors"
-              aria-label="Cerrar ventana"
-            >
-              <FiX size={24} />
-            </button>
-          </div>
-        </div>
-
-        {/* Banner */}
-        <div
-          className="mx-5 mt-4 rounded-lg bg-[#EEF2FF] px-4 py-2.5"
-          style={{ border: '1.5px solid rgb(200, 212, 240)' }}
-        >
-          <div className="flex items-center gap-1.5 text-blue-800">
-            <span className="shrink-0 leading-none">👤</span>
-            <span className="text-[11px] font-medium">Editando cliente existente. Al guardar se actualizarán sus datos.</span>
-          </div>
-        </div>
-
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-5 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto px-3.5 py-3 scrollbar-thin">
+          {/* Title */}
+          <div className="mb-3 flex items-start justify-between">
+            <div className="flex flex-col">
+              <h2 className="text-[15px] font-bold text-[#1a1f5e]">Registro de Cliente</h2>
+              <span className="text-[10px] font-bold uppercase text-slate-400">SISTEMA DE REGISTRO</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5 text-[#1a1f5e]">
+                <span className="text-sm">📞</span>
+                <span className="text-sm font-bold text-[#333333] text-[12px]">970220065</span>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+                aria-label="Cerrar ventana"
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+          </div>
+
+          {/* Banner */}
+          <div
+            className="mb-3 rounded-lg bg-[#EEF2FF] px-3 py-2"
+            style={{ border: '1.5px solid rgb(200, 212, 240)' }}
+          >
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-medium text-[#1A1F5E]">👤 Editando cliente existente. Al guardar se actualizarán sus datos.</span>
+            </div>
+          </div>
+
           {/* DATOS DEL CLIENTE */}
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center gap-1.5 text-slate-500">
-              <span
-                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] leading-none"
-              >
-                👤
-              </span>
-              <h3 className="text-[10px] font-bold uppercase tracking-wide">DATOS DEL CLIENTE</h3>
+              <h3 className="text-[10px] font-bold uppercase tracking-wide">👤 DATOS DEL CLIENTE</h3>
             </div>
 
             <div className="grid grid-cols-2 gap-2.5">
@@ -239,14 +233,14 @@ export default function CustomerRegistrationModal({
                   value={dni}
                   onChange={(e) => setDni(e.target.value)}
                   maxLength={8}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                 />
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-[#666666] mb-1">Clase</label>
                 <div className="relative">
                   <select
-                    className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-100"
+                    className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-100"
                     value="Gold"
                     disabled
                   >
@@ -268,7 +262,7 @@ export default function CustomerRegistrationModal({
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 className={`w-full rounded-lg border px-2.5 py-1.5 text-[11px] font-medium focus:outline-none transition-colors ${
-                  errors.firstName ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-slate-50/50 focus:border-[#1a1f5e]'
+                  errors.firstName ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#FAFBFF] focus:border-[#1a1f5e]'
                 }`}
               />
               {errors.firstName && (
@@ -283,7 +277,7 @@ export default function CustomerRegistrationModal({
                   type="text"
                   value={paterno}
                   onChange={(e) => setPaterno(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                 />
               </div>
               <div>
@@ -292,7 +286,7 @@ export default function CustomerRegistrationModal({
                   type="text"
                   value={materno}
                   onChange={(e) => setMaterno(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                  className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -312,7 +306,7 @@ export default function CustomerRegistrationModal({
                   <div>
                     <label className="block text-[10px] font-bold text-[#666666] mb-1">Provincia <span className="text-red-500">*</span></label>
                     <div className="relative">
-                      <select defaultValue="Lima" className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors">
+                      <select defaultValue="Lima" className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors">
                         <option value="">Seleccione provincia</option>
                         <option value="Lima">Lima</option>
                       </select>
@@ -329,7 +323,7 @@ export default function CustomerRegistrationModal({
                       <select
                         value={district}
                         onChange={(e) => setDistrict(e.target.value)}
-                        className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                        className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                       >
                         <option value="">Seleccione distrito</option>
                         {LIMA_DISTRICTS.map((d) => (
@@ -355,7 +349,7 @@ export default function CustomerRegistrationModal({
                       value={address}
                       onChange={(e) => handleAddressChange(e.target.value)}
                       placeholder="Dirección principal"
-                      className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                      className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                     />
                   </div>
                   <div>
@@ -365,7 +359,7 @@ export default function CustomerRegistrationModal({
                       value={number}
                       onChange={(e) => handleNumberChange(e.target.value)}
                       placeholder="Nro/Mz"
-                      className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                      className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -381,7 +375,7 @@ export default function CustomerRegistrationModal({
                     }}
                     placeholder="Dpto, piso, interior..."
                     className={`w-full rounded-lg border px-2.5 py-1.5 text-[11px] font-medium focus:outline-none transition-colors ${
-                      errors.department ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-slate-50/50 focus:border-[#1a1f5e]'
+                      errors.department ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#FAFBFF] focus:border-[#1a1f5e]'
                     }`}
                   />
                 </div>
@@ -393,7 +387,7 @@ export default function CustomerRegistrationModal({
                     value={reference}
                     onChange={(e) => setReference(e.target.value)}
                     placeholder="Cerca de..."
-                    className="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
+                    className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -413,27 +407,31 @@ export default function CustomerRegistrationModal({
                 </div>
 
                 {/* Map search box */}
-                <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px]">
+                <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[9px]">
                   <input
                     type="text"
                     value={mapSearch}
                     onChange={(e) => setMapSearch(e.target.value)}
                     placeholder="Buscar en el mapa..."
-                    className="flex-1 bg-transparent focus:outline-none"
+                    className="flex-1 bg-transparent text-[9px] text-[#1a1f5e] focus:outline-none"
                   />
                   <button
                     type="button"
                     className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#1a1f5e] text-white"
                   >
-                    <span className="text-[10px]">🎯</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="white">
+                      <circle cx="12" cy="12" r="4" />
+                      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
                   </button>
                 </div>
 
                 {/* Map */}
                 <div
-                  className={`relative w-full overflow-hidden rounded-xl border border-slate-200 transition-all ${
-                    isMapExpanded ? 'h-96' : 'h-48'
+                  className={`relative w-full shrink-0 overflow-hidden rounded-lg transition-all ${
+                    isMapExpanded ? 'h-96' : 'h-[148px]'
                   }`}
+                  style={{ border: '1.5px solid rgb(208, 216, 240)' }}
                 >
                   <iframe
                     title="Mapa de ubicación"
@@ -444,12 +442,12 @@ export default function CustomerRegistrationModal({
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">LAT</label>
-                    <input type="text" value={lat} readOnly className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 focus:outline-none" />
+                    <label className="block text-[8px] font-bold text-slate-400 uppercase mb-1">LAT</label>
+                    <input type="text" value={lat} readOnly className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-3 py-1.5 text-[9px] font-medium text-[#1a1f5e] focus:outline-none" />
                   </div>
                   <div>
-                    <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">LONG</label>
-                    <input type="text" value={lng} readOnly className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 focus:outline-none" />
+                    <label className="block text-[8px] font-bold text-slate-400 uppercase mb-1">LONG</label>
+                    <input type="text" value={lng} readOnly className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-3 py-1.5 text-[9px] font-medium text-[#1a1f5e] focus:outline-none" />
                   </div>
                 </div>
 
@@ -481,7 +479,7 @@ export default function CustomerRegistrationModal({
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {addresses.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={item.id} className="hover:bg-[#FAFBFF] transition-colors">
                       <td className="px-4 py-3 font-bold text-slate-700">{item.address} {item.number}</td>
                       <td className="px-4 py-3 text-slate-500">{item.district}</td>
                       <td className="px-4 py-3 text-slate-500">Lima</td>
@@ -528,14 +526,12 @@ export default function CustomerRegistrationModal({
               </label>
             </div>
           </div>
-        </div>
 
-        {/* Modal Footer */}
-        <div className="px-5 py-4">
+          {/* Actualizar Cliente */}
           <button
             type="button"
             onClick={handleSaveCustomer}
-            className="w-full rounded-xl bg-[#1a1f5e] py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252b7a] active:scale-[0.98]"
+            className="mt-6 w-full rounded-xl bg-[#1a1f5e] py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252b7a] active:scale-[0.98]"
           >
             💾 Actualizar cliente
           </button>
