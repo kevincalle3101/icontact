@@ -9,7 +9,7 @@ export default function AppLayout() {
     <div className="flex h-screen max-h-screen flex-col bg-[#eef2f8] overflow-hidden select-none">
       <TopBar />
       <SectionNav />
-      <main className="flex-1 overflow-hidden p-2.5 sm:p-3">
+      <main className="flex-1 overflow-hidden">
         <ErrorBoundary>
           {/* Desktop: all sections visible at once, mirroring reference layout */}
           <OrderDeskLayout />

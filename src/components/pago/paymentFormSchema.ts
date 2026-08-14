@@ -10,7 +10,7 @@ export const paymentFormSchema = z.object({
   bonusDni: z.string().optional(),
   driverObservation: z
     .string()
-    .max(100, 'Máximo 100 caracteres para Observación Driver')
+    .max(80, 'Máximo 80 caracteres para Observación Driver')
     .optional(),
 });
 

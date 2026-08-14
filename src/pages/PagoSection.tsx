@@ -102,13 +102,13 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
     <>
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+          <h3 className="text-[10px] font-bold text-slate-500">
             Medio de pago:
           </h3>
           <button
             type="button"
             onClick={() => dispatch(toggleManagerDiscount())}
-            className={`rounded-md px-2 py-1 text-[10px] font-bold tracking-tight uppercase transition-colors ${
+            className={`rounded-md px-[7px] py-[1px] text-[9px] font-bold tracking-tight transition-colors ${
               payment.managerDiscountApplied
                 ? 'bg-[#1a1f5e] text-white shadow-xs'
                 : 'bg-[#1a1f5e] text-white hover:bg-[#252b7a]'
@@ -177,7 +177,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
     <>
       {embedded ? (
         <>
-          <div className="mt-4 border-t border-slate-200 pt-3">
+          <div className="mt-4 mb-[10px] border-t border-slate-200 pt-3">
             <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
               5. DETALLE DE PAGO
             </h2>
@@ -194,7 +194,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
             <button
               type="button"
               onClick={() => dispatch(toggleManagerDiscount())}
-              className={`rounded-md px-2 py-1 text-[10px] font-bold tracking-tight uppercase transition-colors ${
+              className={`rounded-md px-[7px] py-[1px] text-[9px] font-bold tracking-tight transition-colors ${
                 payment.managerDiscountApplied
                   ? 'bg-[#1a1f5e] text-white shadow-xs'
                   : 'bg-[#1a1f5e] text-white hover:bg-[#252b7a]'

@@ -37,31 +37,29 @@ export default function PaymentForm({
 
   return (
     <div className="flex flex-col gap-2.5 text-[10px]">
-      <div className="flex items-center justify-between">
-        <span className="font-semibold text-slate-700">Comprobante:</span>
-        <div className="flex rounded-lg border border-slate-300 overflow-hidden">
-          <button
-            type="button"
-            onClick={() => onInvoiceTypeChange('boleta')}
-            className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors ${
-              invoiceType === 'boleta'
-                ? 'bg-[#1a1f5e] text-white'
-                : 'bg-white text-slate-600 hover:bg-slate-50'
-            }`}
-          >
+      <div>
+        <span className="mb-1 block font-semibold text-slate-700">Comprobante:</span>
+        <div className="flex items-center gap-4">
+          <label className="flex cursor-pointer items-center gap-1.5 text-[11px] font-semibold text-slate-700">
+            <input
+              type="radio"
+              name="invoiceType"
+              checked={invoiceType === 'boleta'}
+              onChange={() => onInvoiceTypeChange('boleta')}
+              className="h-4 w-4 accent-[#1a1f5e]"
+            />
             Boleta
-          </button>
-          <button
-            type="button"
-            onClick={() => onInvoiceTypeChange('factura')}
-            className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors ${
-              invoiceType === 'factura'
-                ? 'bg-[#1a1f5e] text-white'
-                : 'bg-white text-slate-600 hover:bg-slate-50'
-            }`}
-          >
+          </label>
+          <label className="flex cursor-pointer items-center gap-1.5 text-[11px] font-semibold text-slate-700">
+            <input
+              type="radio"
+              name="invoiceType"
+              checked={invoiceType === 'factura'}
+              onChange={() => onInvoiceTypeChange('factura')}
+              className="h-4 w-4 accent-[#1a1f5e]"
+            />
             Factura
-          </button>
+          </label>
         </div>
       </div>
 
@@ -111,34 +109,38 @@ export default function PaymentForm({
       </div>
 
       {/* Requirement: DNI del Titular - Bonus replicates DNI from Boleta */}
-      <div>
-        <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">
-          DNI/CE... del Titular - Bonus
+      <div className="rounded-xl border border-amber-300 bg-amber-50/40 p-3">
+        <div className="mb-2 flex items-center gap-1.5 text-amber-600">
+          <span className="text-xs">⭐</span>
+          <h3 className="text-[10px] font-bold uppercase tracking-wide">
+            Bonus — Acumulación de puntos
+          </h3>
+        </div>
+        <label className="block text-[9px] font-semibold text-slate-700 mb-0.5">
+          DNI/CE del titular
         </label>
         <input
           type="text"
           {...register('bonusDni')}
           readOnly
-          className="w-full rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1.5 font-medium text-xs text-slate-600 cursor-not-allowed"
+          className="w-full rounded-lg border border-amber-300 bg-white px-2.5 py-1.5 text-[9px] font-medium text-slate-700 focus:outline-none"
           placeholder="Replicado automáticamente de Boleta"
         />
       </div>
 
-      {/* Requirement: Limit Observación Driver to 100 chars */}
+      {/* Requirement: Limit Observación Driver to 80 chars */}
       <div>
-        <div className="flex justify-between items-center mb-0.5">
-          <label className="block text-[11px] font-semibold text-slate-700">
-            Observación Driver
-          </label>
-          <span className="text-[9px] text-slate-400">{driverObsValue.length}/100</span>
-        </div>
-        <input
-          type="text"
-          maxLength={100}
+        <label className="block text-[9px] font-semibold text-slate-700 mb-0.5">
+          Observación Driver:
+        </label>
+        <textarea
+          rows={3}
+          maxLength={80}
           {...register('driverObservation')}
-          placeholder="Ej: Timbrar el intercomunicador..."
-          className="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 font-medium text-xs focus:border-slate-800 focus:outline-none"
+          placeholder="Escribe una observación para el driver..."
+          className="w-full resize-none rounded-lg border border-slate-300 px-2.5 py-1.5 text-[9px] font-medium focus:border-slate-800 focus:outline-none"
         />
+        <div className="mt-0.5 text-right text-[9px] text-slate-400">{driverObsValue.length}/80</div>
       </div>
     </div>
   );

@@ -18,19 +18,19 @@ export default function OrderDeskLayout() {
   return (
     <div className="hidden h-full gap-3 lg:grid lg:grid-cols-[279px_1fr_350px] items-start overflow-hidden">
       {/* Column 1: Section 1 (Cliente cards stack) */}
-      <div className="flex flex-col gap-2.5 h-full overflow-y-auto pr-1 scrollbar-thin">
+      <div className="flex flex-col gap-2.5 h-full overflow-y-auto pt-2.5 sm:pt-3 pb-2.5 sm:pb-3 pl-2.5 sm:pl-3 pr-1 scrollbar-thin">
         <ClienteSection />
       </div>
 
       {/* Column 2: Section 2 (Carta - Productos) & Section 3 (Venta Sugestiva) fitting 100% height */}
-      <div className="flex flex-col gap-2.5 h-full min-h-0 overflow-hidden">
+      <div className="flex flex-col gap-2.5 h-full min-h-0 overflow-hidden pt-2.5 sm:pt-3 pb-2.5 sm:pb-3">
         <ProductosSection />
         <SugerenciasSection />
       </div>
 
       {/* Column 3: Sections 4 (Resumen) & 5 (Pago) inside a single card, buttons sticky at bottom */}
       <div className="h-full flex flex-col overflow-hidden">
-        <section className="flex flex-col flex-1 min-h-0 rounded-2xl border border-slate-200/90 bg-white shadow-2xs">
+        <section className="flex flex-col flex-1 min-h-0 bg-white shadow-2xs">
           <div className="flex items-center justify-between px-3 pt-3 pb-2 shrink-0">
             <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
               4. RESUMEN PEDIDO
