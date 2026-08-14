@@ -1,5 +1,4 @@
 import { FiTrash2 } from 'react-icons/fi';
-import { toast } from 'react-toastify';
 import ClienteSection from '@/pages/ClienteSection';
 import ProductosSection from '@/pages/ProductosSection';
 import SugerenciasSection from '@/pages/SugerenciasSection';
@@ -14,7 +13,6 @@ export default function OrderDeskLayout() {
 
   const handleClearCart = () => {
     dispatch(clearCart());
-    toast.info('Carrito limpiado');
   };
 
   return (
@@ -68,10 +66,7 @@ export default function OrderDeskLayout() {
             </button>
             <button
               type="button"
-              onClick={() => {
-                dispatch(clearCart());
-                toast.info('Pedido cancelado');
-              }}
+              onClick={() => dispatch(clearCart())}
               className="text-[10px] font-semibold text-slate-500 underline hover:text-slate-800"
             >
               Cancelar pedido

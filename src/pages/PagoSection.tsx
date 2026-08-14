@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-toastify';
 import { FiCheckCircle } from 'react-icons/fi';
 import SectionContainer from '@/components/shared/SectionContainer';
 import PaymentMethod from '@/components/pago/PaymentMethod';
@@ -66,13 +65,6 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
   // Handle Amount change & USD Pop-up requirement
   const handleAmountChange = (newAmount: number) => {
     dispatch(setPaymentAmount(newAmount));
-
-    // Requirement: "Al seleccionar Medio de pago: Dólares y Monto 100 o más debe activarse un pop un de Se acepta hasta la denominación de $ 50.00"
-    if (payment.method === 'usd' && newAmount >= 100) {
-      toast.info('Se acepta hasta la denominación de $ 50.00', {
-        toastId: 'usd-denomination-alert',
-      });
-    }
   };
 
   const handleExactPaymentToggle = (checked: boolean) => {
@@ -90,12 +82,10 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
     );
 
     if (items.length === 0) {
-      toast.error('El pedido está vacío');
       return;
     }
 
     if (payment.amount < total && !payment.exactPayment) {
-      toast.error(`El monto es menor al total del pedido (S/ ${total.toFixed(2)})`);
       return;
     }
 
@@ -103,7 +93,6 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
   });
 
   const handleFinishOrder = () => {
-    toast.success('Pedido enviado correctamente');
     dispatch(clearCart());
     setShowConfirmationModal(false);
     navigate('/cliente');
@@ -130,12 +119,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
         </div>
         <PaymentMethod
           value={payment.method}
-          onChange={(v) => {
-            dispatch(setPaymentMethod(v));
-            if (v === 'usd' && payment.amount >= 100) {
-              toast.info('Se acepta hasta la denominación de $ 50.00');
-            }
-          }}
+          onChange={(v) => dispatch(setPaymentMethod(v))}
         />
       </div>
 
@@ -180,10 +164,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
         </button>
         <button
           type="button"
-          onClick={() => {
-            dispatch(clearCart());
-            toast.info('Pedido cancelado');
-          }}
+          onClick={() => dispatch(clearCart())}
           className="text-[10px] font-semibold text-slate-500 underline hover:text-slate-800"
         >
           Cancelar pedido

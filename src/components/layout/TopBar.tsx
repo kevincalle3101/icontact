@@ -31,7 +31,7 @@ export default function TopBar() {
     <header className="bg-[#0a0e2e] text-white">
       {/* Top Header Row */}
       <div className="flex items-center justify-between px-5 py-2 text-xs font-bold">
-        <span className="text-sm tracking-tight text-white font-extrabold">
+        <span className="text-[17px] tracking-tight text-white font-extrabold">
           TMO: {formatTime(tmoSeconds)}
         </span>
 
@@ -62,7 +62,7 @@ export default function TopBar() {
 
         {/* Right column: MENSAJE GERENCIAL */}
         <div className="flex flex-col justify-center px-4 py-1.5">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#8c97a8]">
+          <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase text-[#8c97a8]">
             <span className="text-blue-500 text-xs">ℹ️</span>
             <span>MENSAJE GERENCIAL</span>
           </div>

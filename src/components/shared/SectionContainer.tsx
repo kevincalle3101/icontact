@@ -7,6 +7,7 @@ interface SectionContainerProps {
   className?: string;
   actions?: ReactNode;
   contentClassName?: string;
+  titleClassName?: string;
 }
 
 export default function SectionContainer({
@@ -15,6 +16,7 @@ export default function SectionContainer({
   className,
   actions,
   contentClassName,
+  titleClassName,
 }: SectionContainerProps) {
   return (
     <section
@@ -25,7 +27,7 @@ export default function SectionContainer({
       )}
     >
       <header className="flex items-center justify-between px-3 pt-3 pb-2">
-        <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">{title}</h2>
+        <h2 className={clsx('font-bold uppercase tracking-wide text-[#7b869d]', titleClassName ?? 'text-[11px]')}>{title}</h2>
         {actions && <div className="flex items-center gap-2">{actions}</div>}
       </header>
       <div className={clsx('flex-1 px-3 pb-3', contentClassName)}>{children}</div>

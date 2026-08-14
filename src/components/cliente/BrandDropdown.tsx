@@ -38,15 +38,16 @@ export default function BrandDropdown({ value, onChange }: BrandDropdownProps) {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold text-white">Marca:</span>
+      <div className="flex items-center">
+        <span className="text-[11px] text-[#8892b0]">Marca:</span>
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-haspopup="listbox"
           aria-expanded={open}
-          className="flex items-center gap-2 rounded-md px-2 py-1 text-sm font-semibold text-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          className="flex items-center gap-14 rounded-md px-2 py-1 text-sm font-semibold text-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
         >
+          <div className="flex items-center gap-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-white">
           <img
             src={BRAND_IMAGES[value]}
             alt={value}
@@ -54,6 +55,7 @@ export default function BrandDropdown({ value, onChange }: BrandDropdownProps) {
             aria-hidden="true"
           />
           {value}
+          </div>
           <FiChevronDown aria-hidden="true" />
         </button>
       </div>

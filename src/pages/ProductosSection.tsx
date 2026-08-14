@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react';
-import { toast } from 'react-toastify';
 import SectionContainer from '@/components/shared/SectionContainer';
 import Spinner from '@/components/shared/Spinner';
 import ErrorMessage from '@/components/shared/ErrorMessage';
@@ -52,13 +51,13 @@ export default function ProductosSection() {
 
   const handleAdd = (product: Product, kitchenObs?: string) => {
     dispatch(addItem({ ...product, quantity: 1, kitchenObs }));
-    toast.success(`${product.name} agregado al pedido`);
   };
 
   return (
     <SectionContainer
       title="2. CARTA - PRODUCTOS"
-      className="flex-1 flex flex-col min-h-0 border border-slate-200 bg-white rounded-2xl shadow-xs overflow-hidden"
+      titleClassName="text-[10px]"
+      className="flex-1 flex flex-col text-[10px] min-h-0 border border-slate-200 bg-white rounded-2xl shadow-xs overflow-hidden"
       contentClassName="flex-1 flex flex-col min-h-0 px-3 pb-3 overflow-hidden"
     >
       <div className="flex-1 flex flex-col min-h-0 gap-2 overflow-hidden">

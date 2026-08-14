@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
 import SectionContainer from '@/components/shared/SectionContainer';
 import Spinner from '@/components/shared/Spinner';
 import SuggestedProducts from '@/components/sugerencias/SuggestedProducts';
@@ -20,7 +19,6 @@ export default function SugerenciasSection() {
 
   const handleAdd = (product: Product) => {
     dispatch(addItem({ ...product, quantity: 1 }));
-    toast.success(`${product.name} agregado al pedido`);
   };
 
   return (

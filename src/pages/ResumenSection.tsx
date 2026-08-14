@@ -1,5 +1,4 @@
 import { FiTrash2 } from 'react-icons/fi';
-import { toast } from 'react-toastify';
 import SectionContainer from '@/components/shared/SectionContainer';
 import CartItemRow from '@/components/resumen/CartItemRow';
 import OrderSummary from '@/components/resumen/OrderSummary';
@@ -34,17 +33,14 @@ export default function ResumenSection({ embedded = false }: ResumenSectionProps
 
   const handleRemove = (productId: string) => {
     dispatch(removeItem(productId));
-    toast.info('Producto eliminado del pedido');
   };
 
   const handleClearCart = () => {
     dispatch(clearCart());
-    toast.info('Carrito limpiado');
   };
 
   const handleUpdateKitchenObs = (productId: string, obs: string) => {
     dispatch(updateKitchenObs({ productId, kitchenObs: obs }));
-    toast.success('Observación guardada');
   };
 
   const content = (

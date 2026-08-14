@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import Spinner from '@/components/shared/Spinner';
 import ErrorMessage from '@/components/shared/ErrorMessage';
 import DeliveryType from '@/components/cliente/DeliveryType';
@@ -35,12 +34,9 @@ export default function ClienteSection() {
 
   const handleSave = (updatedData: Partial<Customer> & { id: string }) => {
     dispatch(saveCustomer(updatedData));
-    toast.success('Cliente actualizado correctamente');
   };
 
-  const handleViewOrder = (order: OrderHistoryItem) => {
-    toast.info(`Pedido ${order.time} · S/ ${order.total.toFixed(2)}`);
-  };
+  const handleViewOrder = (_order: OrderHistoryItem) => {};
 
   const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -64,7 +60,7 @@ export default function ClienteSection() {
         <section className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs">
           {/* Header row */}
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
+            <h2 className="text-[10px] font-bold uppercase tracking-wide text-[#7b869d]">
               1. CLIENTE
             </h2>
             <button
