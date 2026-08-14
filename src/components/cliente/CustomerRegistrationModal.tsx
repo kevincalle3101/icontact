@@ -464,12 +464,12 @@ export default function CustomerRegistrationModal({
           {/* Registered Addresses Table */}
           <div className="mt-6">
             <div className="rounded-xl border border-slate-200 overflow-hidden">
-              <div className="bg-slate-50 flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
+              <div className="bg-slate-50 flex items-center justify-between px-4 py-2.5">
                 <h3 className="text-[10px] font-bold uppercase tracking-wide text-[#888888]">DIRECCIONES REGISTRADAS</h3>
                 <span className="text-[9px] font-bold text-[#888888]">{addresses.length} dirección(es)</span>
               </div>
-              <table className="w-full text-left text-[10px]">
-                <thead className="text-[#bbbbbb] font-bold">
+              <table className="w-full text-left text-[11px]">
+                <thead className="border-b border-slate-100 text-[#bbbbbb] font-bold ">
                   <tr>
                     <th className="px-4 py-2">Dirección</th>
                     <th className="px-4 py-2">Distrito</th>
@@ -479,7 +479,7 @@ export default function CustomerRegistrationModal({
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {addresses.map((item) => (
-                    <tr key={item.id} className="hover:bg-[#FAFBFF] transition-colors text-[#333333]">
+                    <tr key={item.id} className=" text-[#333333]">
                       <td className="px-4 py-3 font-bold">{item.address} {item.number}</td>
                       <td className="px-4 py-3">{item.district}</td>
                       <td className="px-4 py-3">Lima</td>
