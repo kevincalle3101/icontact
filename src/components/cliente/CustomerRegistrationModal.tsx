@@ -180,8 +180,8 @@ export default function CustomerRegistrationModal({
       role="dialog"
     >
       <div
-        className={`relative flex w-full flex-col rounded-2xl bg-white shadow-2xl transition-all ${
-          isMapExpanded ? 'max-w-2xl h-[85vh]' : 'max-w-[520px] max-h-[90vh]'
+        className={`relative flex w-full flex-col rounded-2xl bg-white shadow-2xl transition-all max-h-[90vh] ${
+          isMapExpanded ? 'max-w-[600px]' : 'max-w-[520px]'
         } overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -294,12 +294,12 @@ export default function CustomerRegistrationModal({
 
           {/* DIRECCIONES */}
           <div className="mt-5 flex flex-col gap-2.5">
-            <div className="flex items-center gap-1.5 text-red-500">
+            <div className="flex items-center gap-1.5 text-slate-500">
               <span className="text-xs">📍</span>
               <h3 className="text-[10px] font-bold uppercase tracking-wide">DIRECCIONES</h3>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className={`grid grid-cols-1 gap-4 ${isMapExpanded ? 'lg:grid-cols-[1fr_auto]' : 'lg:grid-cols-2'}`}>
               {/* Left side: Address form fields */}
               <div className="flex flex-col gap-2.5">
                 <div className="grid grid-cols-2 gap-2.5">
@@ -407,17 +407,17 @@ export default function CustomerRegistrationModal({
                 </div>
 
                 {/* Map search box */}
-                <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[9px]">
+                <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={mapSearch}
                     onChange={(e) => setMapSearch(e.target.value)}
                     placeholder="Buscar en el mapa..."
-                    className="flex-1 bg-transparent text-[9px] text-[#1a1f5e] focus:outline-none"
+                    className="h-7 flex-1 rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 text-[9px] text-[#1a1f5e] focus:outline-none"
                   />
                   <button
                     type="button"
-                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#1a1f5e] text-white"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#1a1f5e] text-white"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="white">
                       <circle cx="12" cy="12" r="4" />
@@ -428,8 +428,8 @@ export default function CustomerRegistrationModal({
 
                 {/* Map */}
                 <div
-                  className={`relative w-full shrink-0 overflow-hidden rounded-lg transition-all ${
-                    isMapExpanded ? 'h-96' : 'h-[148px]'
+                  className={`relative shrink-0 overflow-hidden rounded-lg transition-all ${
+                    isMapExpanded ? 'h-[240px] w-[280px]' : 'h-[148px] w-full'
                   }`}
                   style={{ border: '1.5px solid rgb(208, 216, 240)' }}
                 >
@@ -443,11 +443,11 @@ export default function CustomerRegistrationModal({
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block text-[8px] font-bold text-slate-400 uppercase mb-1">LAT</label>
-                    <input type="text" value={lat} readOnly className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-3 py-1.5 text-[9px] font-medium text-[#1a1f5e] focus:outline-none" />
+                    <input type="text" value={lat} readOnly className="h-7 w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-3 text-[9px] font-medium text-[#1a1f5e] focus:outline-none" />
                   </div>
                   <div>
                     <label className="block text-[8px] font-bold text-slate-400 uppercase mb-1">LONG</label>
-                    <input type="text" value={lng} readOnly className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-3 py-1.5 text-[9px] font-medium text-[#1a1f5e] focus:outline-none" />
+                    <input type="text" value={lng} readOnly className="h-7 w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-3 text-[9px] font-medium text-[#1a1f5e] focus:outline-none" />
                   </div>
                 </div>
 
@@ -463,26 +463,26 @@ export default function CustomerRegistrationModal({
 
           {/* Registered Addresses Table */}
           <div className="mt-6">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-wide text-slate-400">DIRECCIONES REGISTRADAS</h3>
-              <span className="text-[9px] font-bold text-slate-400">{addresses.length} dirección(es)</span>
-            </div>
-            <div className="rounded-xl border border-slate-100 overflow-hidden">
+            <div className="rounded-xl border border-slate-200 overflow-hidden">
+              <div className="bg-slate-50 flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
+                <h3 className="text-[10px] font-bold uppercase tracking-wide text-[#888888]">DIRECCIONES REGISTRADAS</h3>
+                <span className="text-[9px] font-bold text-[#888888]">{addresses.length} dirección(es)</span>
+              </div>
               <table className="w-full text-left text-[10px]">
-                <thead className="bg-slate-50 text-slate-400 font-bold uppercase">
+                <thead className="text-[#bbbbbb] font-bold">
                   <tr>
                     <th className="px-4 py-2">Dirección</th>
                     <th className="px-4 py-2">Distrito</th>
                     <th className="px-4 py-2">Provincia</th>
-                    <th className="px-4 py-2 text-right">Acciones</th>
+                    <th className="px-4 py-2 text-right"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-slate-100">
                   {addresses.map((item) => (
-                    <tr key={item.id} className="hover:bg-[#FAFBFF] transition-colors">
-                      <td className="px-4 py-3 font-bold text-slate-700">{item.address} {item.number}</td>
-                      <td className="px-4 py-3 text-slate-500">{item.district}</td>
-                      <td className="px-4 py-3 text-slate-500">Lima</td>
+                    <tr key={item.id} className="hover:bg-[#FAFBFF] transition-colors text-[#333333]">
+                      <td className="px-4 py-3 font-bold">{item.address} {item.number}</td>
+                      <td className="px-4 py-3">{item.district}</td>
+                      <td className="px-4 py-3">Lima</td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex justify-end gap-2">
                           <button
@@ -503,23 +503,23 @@ export default function CustomerRegistrationModal({
           </div>
 
           {/* Tipo de Registro */}
-          <div className="mt-6">
+          <div className="mt-3">
             <h3 className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-3">🏠 TIPO DE REGISTRO</h3>
             <div className="flex gap-3">
-              <label className="flex-1 cursor-pointer">
+              <label className="group flex-1 cursor-pointer">
                 <input type="radio" name="regType" className="hidden peer" defaultChecked />
-                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[10px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
+                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[12px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
                   <div className="h-4 w-4 rounded-full border-2 border-current flex items-center justify-center">
-                    <div className="h-2 w-2 rounded-full bg-current opacity-0 peer-checked:opacity-100" />
+                    <div className="h-2 w-2 rounded-full bg-current opacity-0 group-has-checked:opacity-100" />
                   </div>
                   👨‍👩‍👧 Familia
                 </div>
               </label>
-              <label className="flex-1 cursor-pointer">
+              <label className="group flex-1 cursor-pointer">
                 <input type="radio" name="regType" className="hidden peer" />
-                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[10px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
+                <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 p-3 text-[12px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
                   <div className="h-4 w-4 rounded-full border-2 border-current flex items-center justify-center">
-                    <div className="h-2 w-2 rounded-full bg-current opacity-0 peer-checked:opacity-100" />
+                    <div className="h-2 w-2 rounded-full bg-current opacity-0 group-has-checked:opacity-100" />
                   </div>
                   🏢 Empresa
                 </div>
@@ -531,9 +531,9 @@ export default function CustomerRegistrationModal({
           <button
             type="button"
             onClick={handleSaveCustomer}
-            className="mt-6 w-full rounded-xl bg-[#1a1f5e] py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252b7a] active:scale-[0.98]"
+            className="mt-3 w-full rounded-xl bg-[#1a1f5e] p-3 text-[13px] font-bold text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252b7a] active:scale-[0.98]"
           >
-            💾 Actualizar cliente
+            💾 Actualizar Cliente
           </button>
         </div>
       </div>
