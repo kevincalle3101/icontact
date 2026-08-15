@@ -178,7 +178,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
       {embedded ? (
         <>
           <div className="mt-4 mb-[10px] border-t border-slate-200 pt-3">
-            <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
+            <h2 className="text-[10px] font-bold uppercase tracking-wide text-[#7b869d]">
               5. DETALLE DE PAGO
             </h2>
           </div>
@@ -190,6 +190,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
         <SectionContainer
           title="5. DETALLE DE PAGO"
           className="border border-slate-200 bg-white rounded-2xl shadow-xs"
+          titleClassName="text-[10px]"
           actions={
             <button
               type="button"

@@ -112,7 +112,7 @@ export default function PaymentForm({
       <div className="rounded-xl border border-amber-300 bg-amber-50/40 p-3">
         <div className="mb-2 flex items-center gap-1.5 text-amber-600">
           <span className="text-xs">⭐</span>
-          <h3 className="text-[10px] font-bold uppercase tracking-wide">
+          <h3 className="text-[9px] font-bold uppercase tracking-wide">
             Bonus — Acumulación de puntos
           </h3>
         </div>

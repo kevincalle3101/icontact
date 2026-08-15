@@ -86,6 +86,7 @@ export default function ResumenSection({ embedded = false }: ResumenSectionProps
   return (
     <SectionContainer
       title="4. RESUMEN PEDIDO"
+      titleClassName="text-[10px]"
       className="border border-slate-200 bg-white rounded-2xl shadow-xs"
       actions={
         <button

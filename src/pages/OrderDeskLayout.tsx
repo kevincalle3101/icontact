@@ -32,7 +32,7 @@ export default function OrderDeskLayout() {
       <div className="h-full flex flex-col overflow-hidden">
         <section className="flex flex-col flex-1 min-h-0 bg-white shadow-2xs">
           <div className="flex items-center justify-between px-3 pt-3 pb-2 shrink-0">
-            <h2 className="text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
+            <h2 className="text-[10px] font-bold uppercase tracking-wide text-[#7b869d]">
               4. RESUMEN PEDIDO
             </h2>
             <button
