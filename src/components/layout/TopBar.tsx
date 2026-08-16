@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { FiUser } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { tickTmo } from '@/store/slices/uiSlice';
+import { tickTmo, resetPayment } from '@/store/slices/uiSlice';
 import { setActiveBrand } from '@/store/slices/productsSlice';
+import { clearCart } from '@/store/slices/cartSlice';
 import BrandDropdown from '@/components/cliente/BrandDropdown';
 import type { Brand } from '@/types';
 
@@ -24,7 +25,10 @@ export default function TopBar() {
   }, [dispatch]);
 
   const handleBrandChange = (brand: Brand) => {
+    if (brand === activeBrand) return;
     dispatch(setActiveBrand(brand));
+    dispatch(clearCart());
+    dispatch(resetPayment());
   };
 
   return (
