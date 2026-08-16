@@ -71,11 +71,13 @@ export default function BrandDropdown({ value, onChange }: BrandDropdownProps) {
                 type="button"
                 onClick={() => {
                   onChange(brand);
-                  setOpen(false);
+                  if (brand !== value) setOpen(false);
                 }}
                 className={clsx(
                   'flex items-center gap-2 w-full px-3 py-2 text-left text-sm hover:bg-slate-100',
-                  brand === value ? 'font-semibold text-brand-navy' : 'text-slate-700',
+                  brand === value
+                    ? 'bg-[#eef2ff] font-semibold text-brand-navy'
+                    : 'text-slate-700',
                 )}
               >
                 <img
