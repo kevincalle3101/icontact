@@ -7,7 +7,7 @@ import CategoryTabs from '@/components/productos/CategoryTabs';
 import ProductGrid from '@/components/productos/ProductGrid';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
-  PRODUCT_CATEGORIES,
+  BRAND_CATEGORIES,
   clearSearch,
   loadProductsByBrand,
   setActiveCategory,
@@ -71,7 +71,7 @@ export default function ProductosSection() {
         <div className="flex-1 flex min-h-0 gap-2 overflow-hidden">
           {/* Vertical category tabs on left side */}
           <CategoryTabs
-            categories={PRODUCT_CATEGORIES}
+            categories={BRAND_CATEGORIES[activeBrand]}
             active={activeCategory}
             onSelect={(category) => {
               if (isSearching) dispatch(clearSearch());

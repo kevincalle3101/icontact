@@ -2,16 +2,13 @@ import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/tool
 import { fetchProductsByBrand, fetchSuggestedProducts } from '@/api/productsApi';
 import type { Brand, Product, ProductCategory } from '@/types';
 
-export const PRODUCT_CATEGORIES: ProductCategory[] = [
-  'Combos',
-  'Individuales',
-  'Complementos',
-  'Postres',
-  'Bebidas',
-  'Salsas',
-  'Desayunos',
-  'Otros',
-];
+/** Category tabs are brand-specific: each brand's menu is organized differently. */
+export const BRAND_CATEGORIES: Record<Brand, ProductCategory[]> = {
+  KFC: ['Combos', 'Individuales', 'Complementos', 'Postres', 'Bebidas', 'Salsas', 'Desayunos', 'Otros'],
+  Chilis: ['Entradas', 'Parrillas', 'Fajitas', 'Hamburguesas', 'Ensaladas', 'Postres', 'Bebidas', 'Otros'],
+  'Madam Tusan': ['Dim Sum', 'Wok', 'Arroz Chaufa', 'Sopas', 'Entradas', 'Postres', 'Bebidas', 'Otros'],
+  'Pizza Hut': ['Pizzas', 'Pastas', 'Entradas', 'Alitas', 'Postres', 'Bebidas', 'Otros'],
+};
 
 interface ProductsState {
   /** Currently selected brand */
@@ -31,7 +28,7 @@ interface ProductsState {
 const initialState: ProductsState = {
   activeBrand: 'KFC',
   allProducts: [],
-  activeCategory: 'Combos',
+  activeCategory: BRAND_CATEGORIES.KFC[0],
   suggested: [],
   searchQuery: '',
   loading: false,
@@ -86,8 +83,8 @@ const productsSlice = createSlice({
       .addCase(loadProductsByBrand.fulfilled, (state, action) => {
         state.loading = false;
         state.allProducts = action.payload;
-        // Reset category to first tab when brand changes
-        state.activeCategory = 'Combos';
+        // Reset category to that brand's first tab when brand changes
+        state.activeCategory = BRAND_CATEGORIES[action.meta.arg][0];
       })
       .addCase(loadProductsByBrand.rejected, (state, action) => {
         state.loading = false;

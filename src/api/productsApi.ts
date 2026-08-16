@@ -1,6 +1,6 @@
 import { apiClient } from '@/api/client';
 import { MOCK_PRODUCTS, SUGGESTED_PRODUCTS } from '@/data/mockData';
-import type { Product, ProductCategory } from '@/types';
+import type { Brand, Product, ProductCategory } from '@/types';
 
 const USE_MOCKS = true;
 
@@ -16,10 +16,9 @@ export async function fetchProductsByCategory(category: ProductCategory): Promis
   return data;
 }
 
-export async function fetchProductsByBrand(brand: string): Promise<Product[]> {
+export async function fetchProductsByBrand(brand: Brand): Promise<Product[]> {
   if (USE_MOCKS) {
-    // In mock mode, return all products regardless of brand
-    return simulateDelay(MOCK_PRODUCTS);
+    return simulateDelay(MOCK_PRODUCTS.filter((p) => p.brand === brand));
   }
   const { data } = await apiClient.get<Product[]>('/products', { params: { brand } });
   return data;

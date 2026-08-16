@@ -6,6 +6,7 @@ import type { Product } from '@/types';
 
 const product: Product = {
   id: 'p-1',
+  brand: 'KFC',
   name: 'Combo Personal',
   description: '2 piezas de pollo, 1 papa y 1 bebida personal',
   price: 18.9,

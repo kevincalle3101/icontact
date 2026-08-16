@@ -34,6 +34,7 @@ export interface OrderHistoryItem {
 }
 
 export type ProductCategory =
+  // KFC
   | 'Combos'
   | 'Individuales'
   | 'Complementos'
@@ -41,7 +42,22 @@ export type ProductCategory =
   | 'Bebidas'
   | 'Salsas'
   | 'Desayunos'
-  | 'Otros';
+  | 'Otros'
+  // Chili's
+  | 'Entradas'
+  | 'Parrillas'
+  | 'Fajitas'
+  | 'Hamburguesas'
+  | 'Ensaladas'
+  // Madam Tusan
+  | 'Dim Sum'
+  | 'Wok'
+  | 'Arroz Chaufa'
+  | 'Sopas'
+  // Pizza Hut
+  | 'Pizzas'
+  | 'Pastas'
+  | 'Alitas';
 
 export interface ProductOption {
   category: string;
@@ -50,6 +66,7 @@ export interface ProductOption {
 
 export interface Product {
   id: string;
+  brand: Brand;
   name: string;
   description: string;
   price: number;

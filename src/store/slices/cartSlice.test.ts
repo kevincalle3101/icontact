@@ -13,6 +13,7 @@ beforeEach(() => {
 
 const product: Product = {
   id: 'p-1',
+  brand: 'KFC',
   name: 'Combo Personal',
   description: '2 piezas de pollo',
   price: 18.9,
