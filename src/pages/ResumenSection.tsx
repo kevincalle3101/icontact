@@ -21,14 +21,8 @@ export default function ResumenSection({ embedded = false }: ResumenSectionProps
   const items = useAppSelector(selectCartItems);
   const subtotal = useAppSelector(selectCartSubtotal);
 
-  const handleIncrement = (productId: string) => {
-    const item = items.find((i) => i.productId === productId);
-    if (item) dispatch(updateQuantity({ productId, quantity: item.quantity + 1 }));
-  };
-
-  const handleDecrement = (productId: string) => {
-    const item = items.find((i) => i.productId === productId);
-    if (item) dispatch(updateQuantity({ productId, quantity: item.quantity - 1 }));
+  const handleQuantityChange = (productId: string, quantity: number) => {
+    dispatch(updateQuantity({ productId, quantity }));
   };
 
   const handleRemove = (productId: string) => {
@@ -63,8 +57,7 @@ export default function ResumenSection({ embedded = false }: ResumenSectionProps
             <CartItemRow
               key={item.productId}
               item={item}
-              onIncrement={handleIncrement}
-              onDecrement={handleDecrement}
+              onQuantityChange={handleQuantityChange}
               onRemove={handleRemove}
               onUpdateKitchenObs={handleUpdateKitchenObs}
             />

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CartItemRow from '@/components/resumen/CartItemRow';
 import type { CartItem } from '@/types';
@@ -17,36 +17,45 @@ describe('CartItemRow', () => {
   it('renders item name, quantity and computed line total', () => {
     render(
       <ul>
-        <CartItemRow item={item} onIncrement={vi.fn()} onDecrement={vi.fn()} onRemove={vi.fn()} />
+        <CartItemRow item={item} onQuantityChange={vi.fn()} onRemove={vi.fn()} />
       </ul>,
     );
     expect(screen.getByText('Combo Personal')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText('S/ 37.80')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('2')).toBeInTheDocument();
+    expect(screen.getByText('37.80')).toBeInTheDocument();
   });
 
-  it('calls onIncrement / onDecrement / onRemove handlers', async () => {
-    const onIncrement = vi.fn();
-    const onDecrement = vi.fn();
+  it('calls onQuantityChange / onRemove handlers', async () => {
+    const onQuantityChange = vi.fn();
     const onRemove = vi.fn();
     render(
       <ul>
-        <CartItemRow
-          item={item}
-          onIncrement={onIncrement}
-          onDecrement={onDecrement}
-          onRemove={onRemove}
-        />
+        <CartItemRow item={item} onQuantityChange={onQuantityChange} onRemove={onRemove} />
       </ul>,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: /Aumentar cantidad/i }));
-    expect(onIncrement).toHaveBeenCalledWith('p-1');
-
-    await userEvent.click(screen.getByRole('button', { name: /Disminuir cantidad/i }));
-    expect(onDecrement).toHaveBeenCalledWith('p-1');
+    const quantityInput = screen.getByRole('spinbutton', { name: /Cantidad de Combo Personal/i });
+    fireEvent.change(quantityInput, { target: { value: '3' } });
+    expect(onQuantityChange).toHaveBeenCalledWith('p-1', 3);
 
     await userEvent.click(screen.getByRole('button', { name: /Eliminar Combo Personal/i }));
     expect(onRemove).toHaveBeenCalledWith('p-1');
+  });
+
+  it('toggles the product option breakdown', async () => {
+    const itemWithOptions: CartItem = {
+      ...item,
+      options: [{ category: '2 pz', items: ['1pz Receta Secreta', '1pz Crispy'] }],
+    };
+    render(
+      <ul>
+        <CartItemRow item={itemWithOptions} onQuantityChange={vi.fn()} onRemove={vi.fn()} />
+      </ul>,
+    );
+
+    expect(screen.queryByText('1pz Receta Secreta', { exact: false })).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: /Ver detalle de Combo Personal/i }));
+    expect(screen.getByText('• 1pz Receta Secreta')).toBeInTheDocument();
   });
 });
