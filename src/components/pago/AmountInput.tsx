@@ -15,14 +15,10 @@ export default function AmountInput({
 }: AmountInputProps) {
   const diff = value - total;
   const isEmpty = value === 0;
-  const textColorClass = isEmpty
-    ? 'text-slate-500'
-    : diff < 0
-      ? 'text-red-600'
-      : diff > 0
-        ? 'text-[#1a1f5e]'
-        : 'text-green-600';
-  const boxColorClass = isEmpty ? 'border-slate-200 bg-slate-50' : 'border-blue-200 bg-blue-50';
+  const textColorClass = diff < 0 ? 'text-red-600' : diff > 0 ? 'text-[#1a1f5e]' : 'text-green-600';
+  const boxClass = isEmpty
+    ? 'rounded-[7px] border-[1.5px] border-[#b8d4f8] bg-[#f0f7ff] px-[10px] py-[6px]'
+    : `rounded-lg border px-3 py-2 border-blue-200 bg-blue-50 ${textColorClass}`;
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -43,11 +39,9 @@ export default function AmountInput({
       />
 
       {/* Display box below showing 'Falta (S/): S/ XX.XX' or 'Vuelto (S/): S/ XX.XX' or '✓ Monto exacto' */}
-      <div
-        className={`flex flex-col justify-center gap-0.5 rounded-lg border px-3 py-2 ${boxColorClass} ${textColorClass}`}
-      >
+      <div className={`flex flex-col justify-center gap-0.5 ${boxClass}`}>
         {isEmpty ? (
-          <span className="text-xs font-semibold">—</span>
+          <span className="text-[10px] text-[#999999]">—</span>
         ) : diff < 0 ? (
           <>
             <span className="text-[10px] font-bold">Falta ({currencySymbol}):</span>

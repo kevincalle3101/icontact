@@ -1,4 +1,3 @@
-import { FiTrash2 } from 'react-icons/fi';
 import ClienteSection from '@/pages/ClienteSection';
 import ProductosSection from '@/pages/ProductosSection';
 import SugerenciasSection from '@/pages/SugerenciasSection';
@@ -32,18 +31,18 @@ export default function OrderDeskLayout() {
       <div className="h-full flex flex-col overflow-hidden">
         <section className="flex flex-col flex-1 min-h-0 bg-white shadow-2xs">
           <div className="flex items-center justify-between px-3 pt-3 pb-2 shrink-0">
-            <h2 className="text-[10px] font-bold uppercase tracking-wide text-[#7b869d]">
-              4. RESUMEN PEDIDO
+            <h2 className="text-[10px] font-bold uppercase tracking-[0.8px] text-[#8892b0]">
+              4. Resumen Pedido
             </h2>
             <button
               type="button"
               onClick={handleClearCart}
               disabled={items.length === 0}
-              className="text-slate-400 hover:text-red-600 disabled:opacity-40 transition-colors"
+              className="text-[14px] text-[#bbbbbb] hover:text-red-600 disabled:opacity-40 transition-colors"
               title="Limpiar carrito"
               aria-label="Limpiar carrito"
             >
-              <FiTrash2 size={15} />
+              🗑
             </button>
           </div>
           <div className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">

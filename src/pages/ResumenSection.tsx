@@ -1,4 +1,3 @@
-import { FiTrash2 } from 'react-icons/fi';
 import SectionContainer from '@/components/shared/SectionContainer';
 import CartItemRow from '@/components/resumen/CartItemRow';
 import OrderSummary from '@/components/resumen/OrderSummary';
@@ -39,12 +38,15 @@ export default function ResumenSection({ embedded = false }: ResumenSectionProps
 
   const content = (
     <>
-      {/* Table header row matching screenshot: Cant. | Producto | Obs. | Precio */}
-      <div className="mb-2 flex items-center justify-between border-b border-slate-200 pb-1 text-[10px] font-bold text-slate-400 uppercase">
-        <span className="w-8">Cant.</span>
-        <span className="flex-1 px-1">Producto</span>
-        <span className="w-8 text-center">Obs.</span>
-        <span className="w-16 text-right">Precio</span>
+      {/* Table header row: Cant. | Producto | Obs. | Precio */}
+      <div
+        className="mb-[5px] grid gap-[3px] border-b border-[#eef0f8] pb-[5px] text-[9px] font-semibold text-[#bbbbbb]"
+        style={{ gridTemplateColumns: '46px 1fr 56px 46px' }}
+      >
+        <span>Cant.</span>
+        <span>Producto</span>
+        <span className="text-center">Obs.</span>
+        <span className="text-right">Precio</span>
       </div>
 
       {items.length === 0 ? (
@@ -78,19 +80,19 @@ export default function ResumenSection({ embedded = false }: ResumenSectionProps
 
   return (
     <SectionContainer
-      title="4. RESUMEN PEDIDO"
-      titleClassName="text-[10px]"
+      title="4. Resumen Pedido"
+      titleClassName="text-[10px] tracking-[0.8px] text-[#8892b0]"
       className="border border-slate-200 bg-white rounded-2xl shadow-xs"
       actions={
         <button
           type="button"
           onClick={handleClearCart}
           disabled={items.length === 0}
-          className="text-slate-400 hover:text-red-600 disabled:opacity-40 transition-colors"
+          className="text-[14px] text-[#bbbbbb] hover:text-red-600 disabled:opacity-40 transition-colors"
           title="Limpiar carrito"
           aria-label="Limpiar carrito"
         >
-          <FiTrash2 size={15} />
+          🗑
         </button>
       }
     >

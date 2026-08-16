@@ -10,14 +10,14 @@ export default function OrderSummary({
   total = subtotal,
 }: OrderSummaryProps) {
   return (
-    <div className="flex flex-col gap-1 border-t border-slate-200 pt-2 font-semibold">
-      <div className="flex items-center justify-end gap-3 text-[12px] text-slate-600">
+    <div className="flex flex-col">
+      <div className="flex justify-end gap-2 pt-1 text-[12px] font-extrabold text-[#1a1f5e]">
         <span>Subtotal:</span>
-        <span className="w-20 text-right">S/ {subtotal.toFixed(2)}</span>
+        <span>S/ {subtotal.toFixed(2)}</span>
       </div>
-      <div className="flex items-center justify-end gap-3 text-[13px] font-bold text-slate-900">
+      <div className="mt-1 flex justify-end gap-2 border-t border-[#eef0f8] pt-0.5 text-[13px] font-extrabold text-[#1a1f5e]">
         <span>Total:</span>
-        <span className="w-20 text-right">S/ {total.toFixed(2)}</span>
+        <span>S/ {total.toFixed(2)}</span>
       </div>
     </div>
   );
