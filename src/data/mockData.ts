@@ -1,4 +1,4 @@
-import type { Customer, OrderHistoryItem, Product, StoreInfo } from '@/types';
+import type { Customer, OrderHistoryItem, Product, Store, StoreInfo } from '@/types';
 
 export const MOCK_CUSTOMER: Customer = {
   id: 'cust-1',
@@ -47,8 +47,54 @@ export const MOCK_CUSTOMER: Customer = {
 };
 
 export const MOCK_ORDER_HISTORY: OrderHistoryItem[] = [
-  { id: 'ord-1', time: '14:51', total: 35.4 },
-  { id: 'ord-2', time: '10:20', total: 18.9 },
+  {
+    id: 'ord-1',
+    orderNumber: 'ORD001',
+    date: '12/06/2026',
+    time: '14:51',
+    total: 35.4,
+    items: [
+      {
+        name: 'Combo Personal',
+        quantity: 1,
+        price: 18.9,
+        emoji: '🍗',
+        optionGroups: [
+          {
+            category: '2 pz',
+            items: [
+              { label: '1pz Receta Secreta', note: '1 pecho' },
+              { label: '1pz Crispy', note: '1 ala' },
+            ],
+          },
+          { category: '1 papa', items: [{ label: 'Papa Personal' }] },
+          { category: '1 bebida', items: [{ label: 'Fanta' }] },
+        ],
+      },
+      { name: 'Pie de Manzana', quantity: 2, price: 14.0, emoji: '🥧' },
+      { name: 'Papas Grandes', quantity: 1, price: 13.0, emoji: '🍟' },
+    ],
+  },
+  {
+    id: 'ord-2',
+    orderNumber: 'ORD002',
+    date: '12/06/2026',
+    time: '10:20',
+    total: 18.9,
+    items: [
+      {
+        name: 'Combo Personal',
+        quantity: 1,
+        price: 18.9,
+        emoji: '🍗',
+        optionGroups: [
+          { category: '2 pz', items: [{ label: '2pz Crispy' }] },
+          { category: '1 papa', items: [{ label: 'Papa Personal' }] },
+          { category: '1 bebida', items: [{ label: 'Inca Kola' }] },
+        ],
+      },
+    ],
+  },
 ];
 
 export const MOCK_STORE_INFO: StoreInfo = {
@@ -56,6 +102,37 @@ export const MOCK_STORE_INFO: StoreInfo = {
   name: 'LAS FLORES',
   address: 'Av. Las Flores 123, San Isidro',
 };
+
+export const MOCK_STORES: Store[] = [
+  // KFC - LIMA
+  { id: 'kfc-11', code: 'KFC 11', name: 'SAN MIGUEL', brand: 'KFC', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. La Marina 2355, San Miguel' },
+  { id: 'kfc-45', code: 'KFC 45', name: 'SAN MIGUEL PLAZA', brand: 'KFC', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. Universitaria 1801, San Miguel' },
+  { id: 'kfc-03', code: 'KFC 03', name: 'MIRAFLORES', brand: 'KFC', department: 'LIMA', district: 'MIRAFLORES', address: 'Av. José Larco 345, Miraflores' },
+  { id: 'kfc-22', code: 'KFC 22', name: 'LARCO MAR', brand: 'KFC', department: 'LIMA', district: 'MIRAFLORES', address: 'Malecón de la Reserva 610, Miraflores' },
+  { id: 'kfc-07', code: 'KFC 07', name: 'SAN ISIDRO', brand: 'KFC', department: 'LIMA', district: 'SAN ISIDRO', address: 'Av. Javier Prado Oeste 1680, San Isidro' },
+  // KFC - AREQUIPA
+  { id: 'kfc-31', code: 'KFC 31', name: 'CAYMA', brand: 'KFC', department: 'AREQUIPA', district: 'CAYMA', address: 'Av. Ejército 610, Cayma' },
+  { id: 'kfc-32', code: 'KFC 32', name: 'CERCADO', brand: 'KFC', department: 'AREQUIPA', district: 'CERCADO', address: 'Portal de Flores 130, Cercado' },
+
+  // Chilis - LIMA
+  { id: 'chi-01', code: 'CHI 01', name: 'SAN MIGUEL', brand: 'Chilis', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. La Marina 2000, San Miguel' },
+  { id: 'chi-02', code: 'CHI 02', name: 'MIRAFLORES', brand: 'Chilis', department: 'LIMA', district: 'MIRAFLORES', address: 'Av. José Larco 500, Miraflores' },
+  { id: 'chi-03', code: 'CHI 03', name: 'SAN ISIDRO', brand: 'Chilis', department: 'LIMA', district: 'SAN ISIDRO', address: 'Av. Camino Real 456, San Isidro' },
+  // Chilis - AREQUIPA
+  { id: 'chi-31', code: 'CHI 31', name: 'CAYMA', brand: 'Chilis', department: 'AREQUIPA', district: 'CAYMA', address: 'Av. Dolores 200, Cayma' },
+
+  // Madam Tusan - LIMA
+  { id: 'mt-01', code: 'MT 01', name: 'SAN MIGUEL', brand: 'Madam Tusan', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. La Marina 2200, San Miguel' },
+  { id: 'mt-02', code: 'MT 02', name: 'MIRAFLORES', brand: 'Madam Tusan', department: 'LIMA', district: 'MIRAFLORES', address: 'Av. José Larco 610, Miraflores' },
+  // Madam Tusan - AREQUIPA
+  { id: 'mt-31', code: 'MT 31', name: 'CERCADO', brand: 'Madam Tusan', department: 'AREQUIPA', district: 'CERCADO', address: 'Calle Mercaderes 145, Cercado' },
+
+  // Pizza Hut - LIMA
+  { id: 'ph-01', code: 'PH 01', name: 'SAN MIGUEL', brand: 'Pizza Hut', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. La Marina 2100, San Miguel' },
+  { id: 'ph-02', code: 'PH 02', name: 'SAN ISIDRO', brand: 'Pizza Hut', department: 'LIMA', district: 'SAN ISIDRO', address: 'Av. Camino Real 300, San Isidro' },
+  // Pizza Hut - AREQUIPA
+  { id: 'ph-31', code: 'PH 31', name: 'YANAHUARA', brand: 'Pizza Hut', department: 'AREQUIPA', district: 'YANAHUARA', address: 'Av. Ejército 490, Yanahuara' },
+];
 
 const KFC_PRODUCTS: Product[] = [
   {

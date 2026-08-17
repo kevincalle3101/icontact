@@ -50,10 +50,11 @@ export async function fetchCustomerByPhone(phone: string): Promise<{
 
     // Dynamic order history per phone
     const lastDigits = parseInt(phone.slice(-2) || '0', 10);
-    const orderHistory: OrderHistoryItem[] = [
-      { id: `ord-${phone}-1`, time: '14:51', total: 35.4 + (lastDigits % 15) },
-      { id: `ord-${phone}-2`, time: '10:20', total: 18.9 + (lastDigits % 10) },
-    ];
+    const orderHistory: OrderHistoryItem[] = MOCK_ORDER_HISTORY.map((order, idx) => ({
+      ...order,
+      id: `ord-${phone}-${idx + 1}`,
+      total: order.total + (lastDigits % (idx === 0 ? 15 : 10)),
+    }));
 
     // Dynamic store info per phone/district
     const storeInfo: StoreInfo =

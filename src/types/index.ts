@@ -35,10 +35,31 @@ export interface Customer {
   relatedClients?: RelatedClient[];
 }
 
+export interface OrderItemOption {
+  label: string;
+  note?: string;
+}
+
+export interface OrderOptionGroup {
+  category: string;
+  items: OrderItemOption[];
+}
+
+export interface OrderLineItem {
+  name: string;
+  quantity: number;
+  price: number;
+  emoji?: string;
+  optionGroups?: OrderOptionGroup[];
+}
+
 export interface OrderHistoryItem {
   id: string;
+  orderNumber: string;
+  date: string; // dd/mm/yyyy
   time: string;
   total: number;
+  items: OrderLineItem[];
 }
 
 export type ProductCategory =
@@ -116,6 +137,16 @@ export interface PaymentDetails {
 export interface StoreInfo {
   code: string;
   name: string;
+  address: string;
+}
+
+export interface Store {
+  id: string;
+  code: string;
+  name: string;
+  brand: Brand;
+  department: string;
+  district: string;
   address: string;
 }
 

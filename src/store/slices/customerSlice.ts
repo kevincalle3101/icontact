@@ -43,6 +43,9 @@ const customerSlice = createSlice({
     setDeliveryChannel(state, action: PayloadAction<DeliveryChannel>) {
       state.deliveryChannel = action.payload;
     },
+    setStoreInfo(state, action: PayloadAction<StoreInfo>) {
+      state.storeInfo = action.payload;
+    },
     updateCustomerField(state, action: PayloadAction<Partial<Customer>>) {
       if (state.customer) {
         state.customer = { ...state.customer, ...action.payload };
@@ -83,6 +86,6 @@ const customerSlice = createSlice({
   },
 });
 
-export const { setDeliveryChannel, updateCustomerField, clearCustomerError } =
+export const { setDeliveryChannel, setStoreInfo, updateCustomerField, clearCustomerError } =
   customerSlice.actions;
 export default customerSlice.reducer;

@@ -4,22 +4,29 @@ import ErrorMessage from '@/components/shared/ErrorMessage';
 import DeliveryType from '@/components/cliente/DeliveryType';
 import OrderHistoryTable from '@/components/cliente/OrderHistoryTable';
 import CustomerRegistrationModal from '@/components/cliente/CustomerRegistrationModal';
+import StoreSelectionModal from '@/components/cliente/StoreSelectionModal';
+import OrderDetailModal from '@/components/cliente/OrderDetailModal';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
   clearCustomerError,
   loadCustomerByPhone,
   saveCustomer,
   setDeliveryChannel,
+  setStoreInfo,
 } from '@/store/slices/customerSlice';
-import type { Customer, OrderHistoryItem } from '@/types';
+import { loadOrder } from '@/store/slices/cartSlice';
+import type { CartItem, Customer, DeliveryChannel, OrderHistoryItem, Store } from '@/types';
 
 export default function ClienteSection() {
   const dispatch = useAppDispatch();
   const { customer, orderHistory, storeInfo, deliveryChannel, loading, error } = useAppSelector(
     (state) => state.customer,
   );
+  const activeBrand = useAppSelector((state) => state.products.activeBrand);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPickupModalOpen, setIsPickupModalOpen] = useState(false);
+  const [viewingOrder, setViewingOrder] = useState<OrderHistoryItem | null>(null);
   const [phoneInput, setPhoneInput] = useState(customer?.phone || '970220065');
   const [showAddressDropdown, setShowAddressDropdown] = useState(false);
   const [showClientDropdown, setShowClientDropdown] = useState(false);
@@ -63,7 +70,41 @@ export default function ClienteSection() {
     dispatch(saveCustomer(updatedData));
   };
 
-  const handleViewOrder = (_order: OrderHistoryItem) => {};
+  const handleViewOrder = (order: OrderHistoryItem) => {
+    setViewingOrder(order);
+  };
+
+  const handleLoadOrder = (order: OrderHistoryItem) => {
+    const cartItems: CartItem[] = order.items.map((item, idx) => ({
+      productId: `order-${order.id}-${idx}`,
+      name: item.name,
+      description: '',
+      price: item.price,
+      quantity: item.quantity,
+      emoji: item.emoji || '🍽️',
+      options: item.optionGroups?.map((group) => ({
+        category: group.category,
+        items: group.items.map((opt) => (opt.note ? `${opt.label} — ${opt.note}` : opt.label)),
+      })),
+    }));
+    dispatch(loadOrder(cartItems));
+    setViewingOrder(null);
+  };
+
+  const handleDeliveryChannelChange = (channel: DeliveryChannel) => {
+    dispatch(setDeliveryChannel(channel));
+    setIsPickupModalOpen(channel === 'pickup');
+  };
+
+  const handleCancelPickup = () => {
+    dispatch(setDeliveryChannel('delivery'));
+    setIsPickupModalOpen(false);
+  };
+
+  const handleConfirmStore = (store: Store) => {
+    dispatch(setStoreInfo({ code: store.code, name: store.name, address: store.address }));
+    setIsPickupModalOpen(false);
+  };
 
   const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -254,10 +295,7 @@ export default function ClienteSection() {
           <h2 className="mb-2 text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
             CANAL DE VENTA
           </h2>
-          <DeliveryType
-            value={deliveryChannel}
-            onChange={(channel) => dispatch(setDeliveryChannel(channel))}
-          />
+          <DeliveryType value={deliveryChannel} onChange={handleDeliveryChannelChange} />
         </section>
 
         {/* Card 4: ÚLTIMOS PEDIDOS */}
@@ -288,6 +326,21 @@ export default function ClienteSection() {
         onClose={() => setIsModalOpen(false)}
         customer={customer}
         onSave={handleSave}
+      />
+
+      {/* Store selection modal for Pickup orders */}
+      <StoreSelectionModal
+        isOpen={isPickupModalOpen}
+        brand={activeBrand}
+        onCancel={handleCancelPickup}
+        onConfirm={handleConfirmStore}
+      />
+
+      {/* Order detail modal triggered by the history table's eye icon */}
+      <OrderDetailModal
+        order={viewingOrder}
+        onClose={() => setViewingOrder(null)}
+        onLoadOrder={handleLoadOrder}
       />
     </>
   );

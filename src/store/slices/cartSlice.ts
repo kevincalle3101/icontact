@@ -131,10 +131,14 @@ const cartSlice = createSlice({
       state.items = [];
       persistCart(state.items);
     },
+    loadOrder(state, action: PayloadAction<CartItem[]>) {
+      state.items = action.payload;
+      persistCart(state.items);
+    },
   },
 });
 
-export const { addItem, removeItem, updateQuantity, updateKitchenObs, clearCart } =
+export const { addItem, removeItem, updateQuantity, updateKitchenObs, clearCart, loadOrder } =
   cartSlice.actions;
 export default cartSlice.reducer;
 
