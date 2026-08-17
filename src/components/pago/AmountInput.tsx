@@ -5,6 +5,7 @@ interface AmountInputProps {
   exchangeRate?: number | null;
   onChange: (value: number) => void;
   disabled?: boolean;
+  showDiffBox?: boolean;
 }
 
 export default function AmountInput({
@@ -14,6 +15,7 @@ export default function AmountInput({
   exchangeRate,
   onChange,
   disabled,
+  showDiffBox = true,
 }: AmountInputProps) {
   const diff = value - total;
   const isEmpty = value === 0;
@@ -45,27 +47,29 @@ export default function AmountInput({
       )}
 
       {/* Display box below showing 'Falta (S/): S/ XX.XX' or 'Vuelto (S/): S/ XX.XX' or '✓ Monto exacto' */}
-      <div className={`flex flex-col justify-center gap-0.5 ${boxClass}`}>
-        {isEmpty ? (
-          <span className="text-[10px] text-[#999999]">—</span>
-        ) : diff < 0 ? (
-          <>
-            <span className="text-[10px] font-bold">Falta ({currencySymbol}):</span>
-            <span className="text-[13px] font-bold">
-              {currencySymbol} {Math.abs(diff).toFixed(2)}
-            </span>
-          </>
-        ) : diff > 0 ? (
-          <>
-            <span className="text-[10px] font-bold">Vuelto ({currencySymbol}):</span>
-            <span className="text-[13px] font-bold">
-              {currencySymbol} {diff.toFixed(2)}
-            </span>
-          </>
-        ) : (
-          <span className="text-[10px] font-bold text-[#1a7f37]">✓ Monto exacto</span>
-        )}
-      </div>
+      {showDiffBox && (
+        <div className={`flex flex-col justify-center gap-0.5 ${boxClass}`}>
+          {isEmpty ? (
+            <span className="text-[10px] text-[#999999]">—</span>
+          ) : diff < 0 ? (
+            <>
+              <span className="text-[10px] font-bold">Falta ({currencySymbol}):</span>
+              <span className="text-[13px] font-bold">
+                {currencySymbol} {Math.abs(diff).toFixed(2)}
+              </span>
+            </>
+          ) : diff > 0 ? (
+            <>
+              <span className="text-[10px] font-bold">Vuelto ({currencySymbol}):</span>
+              <span className="text-[13px] font-bold">
+                {currencySymbol} {diff.toFixed(2)}
+              </span>
+            </>
+          ) : (
+            <span className="text-[10px] font-bold text-[#1a7f37]">✓ Monto exacto</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

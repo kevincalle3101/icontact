@@ -45,6 +45,14 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
   const total = Math.max(0, subtotal - discountAmount);
   // When paying in USD, the amount owed converts through the current rate
   const totalForPayment = payment.method === 'usd' && exchangeRate ? total / exchangeRate : total;
+  // Card/Yape always charges the exact total: no cash tendered, so no vuelto/falta to compute
+  const isCardOrYape = payment.method === 'tarjeta';
+
+  useEffect(() => {
+    if (isCardOrYape) {
+      dispatch(setPaymentAmount(totalForPayment));
+    }
+  }, [isCardOrYape, totalForPayment, dispatch]);
 
   const {
     register,
@@ -137,7 +145,8 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
         currencySymbol={payment.method === 'usd' ? '$' : 'S/'}
         exchangeRate={exchangeRate}
         onChange={handleAmountChange}
-        disabled={payment.exactPayment}
+        disabled={payment.exactPayment || isCardOrYape}
+        showDiffBox={!isCardOrYape}
       />
 
       <ExactPaymentCheckbox
