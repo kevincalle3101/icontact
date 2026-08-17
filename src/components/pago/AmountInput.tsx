@@ -46,6 +46,14 @@ export default function AmountInput({
         <div className="text-[10px] text-slate-500">Tipo de cambio: {exchangeRate.toFixed(2)}</div>
       )}
 
+      {/* Informative only: doesn't block continuing the order, may pay with several bills */}
+      {currencySymbol === '$' && value >= 100 && (
+        <div className="flex items-start gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-2 text-[10px] text-blue-700">
+          <span aria-hidden="true">ℹ️</span>
+          <span>Se acepta hasta la denominación de $ 50.00</span>
+        </div>
+      )}
+
       {/* Display box below showing 'Falta (S/): S/ XX.XX' or 'Vuelto (S/): S/ XX.XX' or '✓ Monto exacto' */}
       {showDiffBox && (
         <div className={`flex flex-col justify-center gap-0.5 ${boxClass}`}>

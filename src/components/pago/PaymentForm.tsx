@@ -128,19 +128,19 @@ export default function PaymentForm({
         />
       </div>
 
-      {/* Requirement: Limit Observación Driver to 80 chars */}
+      {/* Requirement: Limit Observación Driver to 100 chars */}
       <div>
         <label className="block text-[9px] font-semibold text-slate-700 mb-0.5">
           Observación Driver:
         </label>
         <textarea
           rows={3}
-          maxLength={80}
+          maxLength={100}
           {...register('driverObservation')}
           placeholder="Escribe una observación para el driver..."
           className="w-full resize-none rounded-lg border border-slate-300 px-2.5 py-1.5 text-[9px] font-medium focus:border-slate-800 focus:outline-none"
         />
-        <div className="mt-0.5 text-right text-[9px] text-slate-400">{driverObsValue.length}/80</div>
+        <div className="mt-0.5 text-right text-[9px] text-slate-400">{driverObsValue.length}/100</div>
       </div>
     </div>
   );
