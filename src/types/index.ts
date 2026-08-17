@@ -11,6 +11,13 @@ export interface AddressItem {
   reference: string;
 }
 
+export interface RelatedClient {
+  id: string;
+  firstName: string;
+  lastName: string;
+  dni: string;
+}
+
 export interface Customer {
   id: string;
   phone: string;
@@ -25,6 +32,7 @@ export interface Customer {
   department: string;
   reference: string;
   addresses?: AddressItem[];
+  relatedClients?: RelatedClient[];
 }
 
 export interface OrderHistoryItem {

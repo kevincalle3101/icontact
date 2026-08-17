@@ -39,6 +39,11 @@ export const MOCK_CUSTOMER: Customer = {
       reference: 'Frente a Parque Kennedy',
     },
   ],
+  relatedClients: [
+    { id: 'rel-1', firstName: 'Rosa Stefania', lastName: 'Gerónimo Llanos', dni: '72749143' },
+    { id: 'rel-2', firstName: 'Carlos Alberto', lastName: 'Gerónimo Llanos', dni: '72749200' },
+    { id: 'rel-3', firstName: 'María Luisa', lastName: 'Gerónimo Llanos', dni: '72100543' },
+  ],
 };
 
 export const MOCK_ORDER_HISTORY: OrderHistoryItem[] = [

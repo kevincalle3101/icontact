@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Spinner from '@/components/shared/Spinner';
 import ErrorMessage from '@/components/shared/ErrorMessage';
 import DeliveryType from '@/components/cliente/DeliveryType';
@@ -22,10 +22,37 @@ export default function ClienteSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phoneInput, setPhoneInput] = useState(customer?.phone || '970220065');
   const [showAddressDropdown, setShowAddressDropdown] = useState(false);
+  const [showClientDropdown, setShowClientDropdown] = useState(false);
+  const addressDropdownRef = useRef<HTMLDivElement>(null);
+  const clientDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     dispatch(loadCustomerByPhone('970220065'));
   }, [dispatch]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        addressDropdownRef.current &&
+        !addressDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowAddressDropdown(false);
+      }
+      if (
+        clientDropdownRef.current &&
+        !clientDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowClientDropdown(false);
+      }
+    }
+
+    if (showAddressDropdown || showClientDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAddressDropdown, showClientDropdown]);
 
   const handleSearch = (phone: string) => {
     dispatch(clearCustomerError());
@@ -102,15 +129,49 @@ export default function ClienteSection() {
             </div>
 
             {/* Customer name row with person icon on left & dark caret down on right */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 truncate">
-                <span className="text-slate-500 text-xs shrink-0">👤</span>
-                <div className="flex flex-col text-[11px] leading-tight font-extrabold text-black truncate">
-                  <span>{customer?.firstName || 'Rosa Stefania'}</span>
-                  <span>{customer?.lastName || 'Gerónimo Llanos'}</span>
+            <div className="relative" ref={clientDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setShowClientDropdown((v) => !v)}
+                className="flex w-full items-center justify-between text-left bg-transparent"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <span className="text-slate-500 text-xs shrink-0">👤</span>
+                  <div className="flex flex-col text-[11px] leading-tight font-extrabold text-black truncate">
+                    <span>{customer?.firstName || 'Rosa Stefania'}</span>
+                    <span>{customer?.lastName || 'Gerónimo Llanos'}</span>
+                  </div>
                 </div>
-              </div>
-              <span className="text-[#1a1f5e] text-[9px] ml-1 shrink-0">▼</span>
+                <span className="text-[#1a1f5e] text-[9px] ml-1 shrink-0">▼</span>
+              </button>
+
+              {showClientDropdown && customer?.relatedClients && customer.relatedClients.length > 0 && (
+                <ul className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg text-xs">
+                  {customer.relatedClients.map((rel) => (
+                    <li key={rel.id}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleSave({
+                            id: customer.id,
+                            firstName: rel.firstName,
+                            lastName: rel.lastName,
+                            dni: rel.dni,
+                            familyName: rel.lastName,
+                          });
+                          setShowClientDropdown(false);
+                        }}
+                        className="w-full px-3 py-1.5 text-left hover:bg-slate-100"
+                      >
+                        <div className="font-semibold text-slate-700">
+                          {rel.firstName} {rel.lastName}
+                        </div>
+                        <div className="text-[10px] text-[#7e8aa2]">DNI: {rel.dni}</div>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             {/* DNI & Familia lines */}
@@ -131,7 +192,7 @@ export default function ClienteSection() {
             DIRECCIÓN DE ENTREGA
           </h2>
 
-          <div className="relative mb-2">
+          <div className="relative mb-2" ref={addressDropdownRef}>
             <button
               type="button"
               onClick={() => setShowAddressDropdown((v) => !v)}
