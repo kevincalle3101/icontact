@@ -73,16 +73,14 @@ export default function PaymentForm({
           maxLength={invoiceType === 'factura' ? 11 : 12}
           {...register('dni')}
           placeholder={invoiceType === 'factura' ? '11 dígitos RUC' : '8 dígitos DNI / CE'}
-          className={`w-full rounded-lg border px-2.5 py-1.5 font-medium text-[10px] focus:outline-none ${
-            isDniLengthAlert || errors.dni
-              ? 'border-amber-500 bg-amber-50/50'
-              : 'border-slate-300 focus:border-slate-800'
-          }`}
+          className={`w-full rounded-lg border px-2.5 py-1.5 font-medium text-[10px] focus:outline-none border-slate-300 focus:border-slate-800`}
         />
         {/* Warning alert if characters count not reached */}
         {isDniLengthAlert && (
-          <p className="mt-0.5 text-[10px] font-semibold text-amber-700">
-            ⚠️ {invoiceType === 'boleta' ? 'DNI/CE requiere al menos 8 dígitos' : 'RUC requiere 11 dígitos'} ({dniValue.length}/{invoiceType === 'boleta' ? 8 : 11})
+          <p className="mt-0.5 text-[9px] text-[#e07020]">
+            ⚠ {invoiceType === 'boleta'
+              ? `El DNI/CE debe tener 8 dígitos (${dniValue.length}/8)`
+              : `El RUC debe tener 11 dígitos (${dniValue.length}/11)`}
           </p>
         )}
         {errors.dni && !isDniLengthAlert && (
@@ -94,7 +92,7 @@ export default function PaymentForm({
       <div>
         <div className="flex justify-between items-center mb-0.5">
           <label className="block text-[11px] font-semibold text-slate-700">
-            {invoiceType === 'factura' ? 'Razón Social' : 'Nombre / Razón Social'}
+            {invoiceType === 'factura' ? 'Razón Social:' : 'Nombre:'}
           </label>
           <span className="text-[9px] text-slate-400">{nameValue.length}/100</span>
         </div>
@@ -102,7 +100,7 @@ export default function PaymentForm({
           type="text"
           maxLength={100}
           {...register('name')}
-          placeholder="Nombre o Razón Social"
+          placeholder={invoiceType === 'factura' ? 'Ingresa la razón social...' : 'Ingresa el nombre...'}
           className="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 font-medium text-xs focus:border-slate-800 focus:outline-none"
         />
         {errors.name && <p className="mt-0.5 text-[10px] text-red-500">{errors.name.message}</p>}
