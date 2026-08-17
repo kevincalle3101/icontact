@@ -2,6 +2,7 @@ interface AmountInputProps {
   value: number;
   total: number;
   currencySymbol?: string;
+  exchangeRate?: number | null;
   onChange: (value: number) => void;
   disabled?: boolean;
 }
@@ -10,6 +11,7 @@ export default function AmountInput({
   value,
   total,
   currencySymbol = 'S/',
+  exchangeRate,
   onChange,
   disabled,
 }: AmountInputProps) {
@@ -37,6 +39,10 @@ export default function AmountInput({
         onChange={(e) => onChange(Number.parseFloat(e.target.value) || 0)}
         className="w-full rounded-lg border border-slate-300 px-[10px] py-[6px] text-[13px] font-semibold text-slate-800 focus:border-slate-800 focus:outline-none bg-white"
       />
+
+      {currencySymbol === '$' && exchangeRate != null && (
+        <div className="text-[10px] text-slate-500">Tipo de cambio: {exchangeRate.toFixed(2)}</div>
+      )}
 
       {/* Display box below showing 'Falta (S/): S/ XX.XX' or 'Vuelto (S/): S/ XX.XX' or '✓ Monto exacto' */}
       <div className={`flex flex-col justify-center gap-0.5 ${boxClass}`}>

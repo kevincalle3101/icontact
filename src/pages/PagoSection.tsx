@@ -19,6 +19,7 @@ import {
   setPaymentMethod,
   toggleManagerDiscount,
 } from '@/store/slices/uiSlice';
+import { loadExchangeRate } from '@/store/slices/exchangeRateSlice';
 import type { InvoiceType as InvoiceTypeValue } from '@/types';
 
 interface PagoSectionProps {
@@ -31,12 +32,19 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
   const items = useAppSelector(selectCartItems);
   const subtotal = useAppSelector(selectCartSubtotal);
   const payment = useAppSelector((state) => state.ui.payment);
+  const exchangeRate = useAppSelector((state) => state.exchangeRate.rate);
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
+  useEffect(() => {
+    dispatch(loadExchangeRate());
+  }, [dispatch]);
 
   // Discount calculation
   const discountAmount = payment.managerDiscountApplied ? subtotal * 0.10 : 0;
   const total = Math.max(0, subtotal - discountAmount);
+  // When paying in USD, the amount owed converts through the current rate
+  const totalForPayment = payment.method === 'usd' && exchangeRate ? total / exchangeRate : total;
 
   const {
     register,
@@ -70,7 +78,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
   const handleExactPaymentToggle = (checked: boolean) => {
     dispatch(setExactPayment(checked));
     if (checked) {
-      dispatch(setPaymentAmount(total));
+      dispatch(setPaymentAmount(totalForPayment));
     }
   };
 
@@ -85,7 +93,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
       return;
     }
 
-    if (payment.amount < total && !payment.exactPayment) {
+    if (payment.amount < totalForPayment && !payment.exactPayment) {
       return;
     }
 
@@ -125,8 +133,9 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
 
       <AmountInput
         value={payment.amount}
-        total={total}
+        total={totalForPayment}
         currencySymbol={payment.method === 'usd' ? '$' : 'S/'}
+        exchangeRate={exchangeRate}
         onChange={handleAmountChange}
         disabled={payment.exactPayment}
       />
