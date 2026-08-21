@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { fetchCustomerByPhone, updateCustomer } from '@/api/customerApi';
 import { MOCK_STORE_INFO } from '@/data/mockData';
-import type { Customer, DeliveryChannel, OrderHistoryItem, StoreInfo } from '@/types';
+import type { Brand, Customer, DeliveryChannel, OrderHistoryItem, StoreInfo } from '@/types';
 
 interface CustomerState {
   customer: Customer | null;
@@ -23,8 +23,8 @@ const initialState: CustomerState = {
 
 export const loadCustomerByPhone = createAsyncThunk(
   'customer/loadByPhone',
-  async (phone: string) => {
-    const res = await fetchCustomerByPhone(phone);
+  async ({ phone, brand }: { phone: string; brand: Brand }) => {
+    const res = await fetchCustomerByPhone(phone, brand);
     return res;
   },
 );

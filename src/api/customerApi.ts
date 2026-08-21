@@ -1,6 +1,6 @@
 import { apiClient } from '@/api/client';
 import { MOCK_CUSTOMER, MOCK_ORDER_HISTORY, MOCK_STORE_INFO } from '@/data/mockData';
-import type { Customer, OrderHistoryItem, StoreInfo } from '@/types';
+import type { Brand, Customer, OrderHistoryItem, StoreInfo } from '@/types';
 
 const USE_MOCKS = true;
 
@@ -11,7 +11,10 @@ function simulateDelay<T>(value: T, ms = 200): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(value), ms));
 }
 
-export async function fetchCustomerByPhone(phone: string): Promise<{
+export async function fetchCustomerByPhone(
+  phone: string,
+  brand: Brand,
+): Promise<{
   customer: Customer;
   orderHistory: OrderHistoryItem[];
   storeInfo: StoreInfo;
@@ -48,9 +51,12 @@ export async function fetchCustomerByPhone(phone: string): Promise<{
       customerCache[phone] = customer;
     }
 
-    // Dynamic order history per phone
+    // Order history is scoped to the active brand: each brand runs its own order
+    // system, so a customer's KFC history never surfaces (or gets reloaded) from Madam Tusan, etc.
     const lastDigits = parseInt(phone.slice(-2) || '0', 10);
-    const orderHistory: OrderHistoryItem[] = MOCK_ORDER_HISTORY.map((order, idx) => ({
+    const orderHistory: OrderHistoryItem[] = MOCK_ORDER_HISTORY.filter(
+      (order) => order.brand === brand,
+    ).map((order, idx) => ({
       ...order,
       id: `ord-${phone}-${idx + 1}`,
       total: order.total + (lastDigits % (idx === 0 ? 15 : 10)),
@@ -71,7 +77,7 @@ export async function fetchCustomerByPhone(phone: string): Promise<{
     customer: Customer;
     orderHistory: OrderHistoryItem[];
     storeInfo: StoreInfo;
-  }>('/customer', { params: { phone } });
+  }>('/customer', { params: { phone, brand } });
   return data;
 }
 
@@ -92,12 +98,18 @@ export async function updateCustomer(
   return data;
 }
 
-export async function fetchOrderHistory(customerId: string): Promise<OrderHistoryItem[]> {
+export async function fetchOrderHistory(
+  customerId: string,
+  brand: Brand,
+): Promise<OrderHistoryItem[]> {
   if (USE_MOCKS) {
-    return simulateDelay(MOCK_ORDER_HISTORY.slice(0, 2), customerId ? 200 : 200);
+    return simulateDelay(
+      MOCK_ORDER_HISTORY.filter((order) => order.brand === brand),
+      customerId ? 200 : 200,
+    );
   }
   const { data } = await apiClient.get<OrderHistoryItem[]>('/orders', {
-    params: { customerId },
+    params: { customerId, brand },
   });
   return data;
 }

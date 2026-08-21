@@ -33,9 +33,12 @@ export default function ClienteSection() {
   const addressDropdownRef = useRef<HTMLDivElement>(null);
   const clientDropdownRef = useRef<HTMLDivElement>(null);
 
+  // Re-fetches whenever the active brand changes too: order history (and store
+  // info) live per brand, so switching brands must reload them for this customer.
   useEffect(() => {
-    dispatch(loadCustomerByPhone('970220065'));
-  }, [dispatch]);
+    dispatch(loadCustomerByPhone({ phone: phoneInput, brand: activeBrand }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeBrand]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -63,7 +66,7 @@ export default function ClienteSection() {
 
   const handleSearch = (phone: string) => {
     dispatch(clearCustomerError());
-    dispatch(loadCustomerByPhone(phone));
+    dispatch(loadCustomerByPhone({ phone, brand: activeBrand }));
   };
 
   const handleSave = (updatedData: Partial<Customer> & { id: string }) => {
@@ -120,7 +123,7 @@ export default function ClienteSection() {
         {error && (
           <ErrorMessage
             message={error}
-            onRetry={() => dispatch(loadCustomerByPhone('970220065'))}
+            onRetry={() => dispatch(loadCustomerByPhone({ phone: phoneInput, brand: activeBrand }))}
           />
         )}
 
@@ -269,7 +272,7 @@ export default function ClienteSection() {
                       }}
                       className="w-full px-3 py-1.5 text-left hover:bg-slate-100 font-medium text-slate-700"
                     >
-                      📍 {addr.address} {addr.number} ({addr.district})
+                      {addr.address} {addr.number} ({addr.district})
                     </button>
                   </li>
                 ))}

@@ -56,6 +56,7 @@ export interface OrderLineItem {
 export interface OrderHistoryItem {
   id: string;
   orderNumber: string;
+  brand: Brand;
   date: string; // dd/mm/yyyy
   time: string;
   total: number;

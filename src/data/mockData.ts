@@ -46,10 +46,13 @@ export const MOCK_CUSTOMER: Customer = {
   ],
 };
 
+// Each order belongs to the brand it was placed in — a customer's KFC history
+// lives in KFC's own order system and is never shown/loadable from another brand.
 export const MOCK_ORDER_HISTORY: OrderHistoryItem[] = [
   {
     id: 'ord-1',
     orderNumber: 'ORD001',
+    brand: 'KFC',
     date: '12/06/2026',
     time: '14:51',
     total: 35.4,
@@ -78,6 +81,7 @@ export const MOCK_ORDER_HISTORY: OrderHistoryItem[] = [
   {
     id: 'ord-2',
     orderNumber: 'ORD002',
+    brand: 'KFC',
     date: '12/06/2026',
     time: '10:20',
     total: 18.9,
@@ -94,6 +98,40 @@ export const MOCK_ORDER_HISTORY: OrderHistoryItem[] = [
         ],
       },
     ],
+  },
+  {
+    id: 'ord-3',
+    orderNumber: 'ORD003',
+    brand: 'Chilis',
+    date: '10/06/2026',
+    time: '20:15',
+    total: 46.8,
+    items: [
+      { name: 'Classic Bacon Burger', quantity: 1, price: 34.9, emoji: '🍔' },
+      { name: 'Gaseosa 500ml', quantity: 1, price: 8.5, emoji: '🥤' },
+      { name: 'Molten Chocolate Cake', quantity: 1, price: 18.9, emoji: '🍫' },
+    ],
+  },
+  {
+    id: 'ord-4',
+    orderNumber: 'ORD004',
+    brand: 'Madam Tusan',
+    date: '08/06/2026',
+    time: '13:40',
+    total: 35.8,
+    items: [
+      { name: 'Wantán Frito', quantity: 1, price: 16.9, emoji: '🥟' },
+      { name: 'Siu Mai', quantity: 1, price: 18.9, emoji: '🥟' },
+    ],
+  },
+  {
+    id: 'ord-5',
+    orderNumber: 'ORD005',
+    brand: 'Pizza Hut',
+    date: '05/06/2026',
+    time: '19:05',
+    total: 54.9,
+    items: [{ name: 'Pizza Hawaiana Familiar', quantity: 1, price: 54.9, emoji: '🍕' }],
   },
 ];
 
