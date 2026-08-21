@@ -53,13 +53,13 @@ export async function fetchCustomerByPhone(
 
     // Order history is scoped to the active brand: each brand runs its own order
     // system, so a customer's KFC history never surfaces (or gets reloaded) from Madam Tusan, etc.
-    const lastDigits = parseInt(phone.slice(-2) || '0', 10);
+    // Total is always derived from `items` (see getOrderTotal) rather than stored here,
+    // so it can never drift out of sync with the line items shown in the detail modal.
     const orderHistory: OrderHistoryItem[] = MOCK_ORDER_HISTORY.filter(
       (order) => order.brand === brand,
     ).map((order, idx) => ({
       ...order,
       id: `ord-${phone}-${idx + 1}`,
-      total: order.total + (lastDigits % (idx === 0 ? 15 : 10)),
     }));
 
     // Dynamic store info per phone/district

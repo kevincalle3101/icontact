@@ -1,4 +1,5 @@
 import { FiX } from 'react-icons/fi';
+import { getOrderTotal } from '@/utils/orderHistory';
 import type { OrderHistoryItem } from '@/types';
 
 interface OrderDetailModalProps {
@@ -69,7 +70,7 @@ export default function OrderDetailModal({ order, onClose, onLoadOrder }: OrderD
         </div>
 
         <div className="flex items-center justify-between border-t border-[#f0f0f0] pt-3">
-          <span className="text-[13px] font-bold">Total: S/ {order.total.toFixed(2)}</span>
+          <span className="text-[13px] font-bold">Total: S/ {getOrderTotal(order).toFixed(2)}</span>
           <button
             type="button"
             onClick={() => onLoadOrder(order)}

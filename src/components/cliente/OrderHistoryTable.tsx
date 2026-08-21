@@ -1,3 +1,4 @@
+import { getOrderTotal } from '@/utils/orderHistory';
 import type { OrderHistoryItem } from '@/types';
 
 interface OrderHistoryTableProps {
@@ -31,7 +32,7 @@ export default function OrderHistoryTable({ orders, onViewDetails }: OrderHistor
           <tr key={order.id} className="border-b border-[#f0f3f8] last:border-b-0">
             <td className="py-1 text-[#475569] font-medium text-[10px]">{order.time}</td>
             <td className="py-1 text-right font-extrabold text-[#1e293b] text-[10px] pr-1">
-              S/ {order.total.toFixed(2)}
+              S/ {getOrderTotal(order).toFixed(2)}
             </td>
             <td className="py-1 text-right">
               <button
