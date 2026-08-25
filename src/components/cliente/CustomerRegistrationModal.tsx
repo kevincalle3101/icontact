@@ -1,6 +1,21 @@
 import { useState, useEffect } from 'react';
 import { FiX } from 'react-icons/fi';
+import { searchAddress } from '@/api/geocodeApi';
+import CustomSelect from '@/components/shared/CustomSelect';
 import type { AddressItem, Customer } from '@/types';
+
+const PROVINCES = [
+  'Lima',
+  'Callao',
+  'Arequipa',
+  'Trujillo',
+  'Chiclayo',
+  'Piura',
+  'Ica',
+  'Cusco',
+  'Lambayeque',
+  'Junín',
+];
 
 export const LIMA_DISTRICTS = [
   'San Isidro',
@@ -46,15 +61,25 @@ export default function CustomerRegistrationModal({
   const [dni, setDni] = useState(customer?.dni || '');
   const [address, setAddress] = useState(customer?.address || '');
   const [number, setNumber] = useState(customer?.number || '');
+  const [province, setProvince] = useState('Lima');
   const [district, setDistrict] = useState(customer?.district || 'San Isidro');
   const [department, setDepartment] = useState(customer?.department || '');
   const [reference, setReference] = useState(customer?.reference || '');
 
-  // Map state
+  // Map state: mapSearch is only ever set by the user typing their own query —
+  // the address/number/district/province fields feed a live *placeholder*
+  // suggestion instead (see mapSearchSuggestion), so typing there never
+  // overwrites something the user already typed into the search box.
   const [mapSearch, setMapSearch] = useState('');
   const [isMapExpanded, setIsMapExpanded] = useState(false);
-  const [lat] = useState(-12.0464);
-  const [lng] = useState(-77.0428);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [lat, setLat] = useState(-12.0464);
+  const [lng, setLng] = useState(-77.0428);
+
+  const mapSearchSuggestion = [[address, number].filter(Boolean).join(' '), district, province]
+    .filter(Boolean)
+    .join(', ');
 
   // Address selection state
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -94,19 +119,50 @@ export default function CustomerRegistrationModal({
       setDistrict(customer.district.replace(' - Lima', ''));
       setDepartment(customer.department);
       setReference(customer.reference);
-      setMapSearch(`${customer.address} ${customer.number || ''}`.trim());
     }
   }, [customer]);
 
-  // Sync address + number into map search
-  const handleAddressChange = (val: string) => {
-    setAddress(val);
-    setMapSearch(`${val} ${number}`.trim());
+  const handleAddressChange = (val: string) => setAddress(val);
+
+  const handleNumberChange = (val: string) => setNumber(val);
+
+  const runMapSearch = async (query: string) => {
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    setIsSearching(true);
+    setSearchError(null);
+    try {
+      const result = await searchAddress(trimmed);
+      if (result) {
+        setLat(result.lat);
+        setLng(result.lng);
+      } else {
+        setSearchError('No se encontró la dirección');
+      }
+    } catch {
+      setSearchError('Error al buscar la dirección');
+    } finally {
+      setIsSearching(false);
+    }
   };
 
-  const handleNumberChange = (val: string) => {
-    setNumber(val);
-    setMapSearch(`${address} ${val}`.trim());
+  const handleMapSearchClick = () => {
+    runMapSearch(mapSearch.trim() || mapSearchSuggestion);
+  };
+
+  const handleMapSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleMapSearchClick();
+    }
+  };
+
+  // Auto-search fires specifically when the user leaves Nro/Mz (blur) — not while
+  // typing in Dirección, and not on every keystroke.
+  const handleNumberBlur = () => {
+    if (address.trim() && number.trim()) {
+      runMapSearch(mapSearchSuggestion);
+    }
   };
 
   const handleSelectSavedAddress = (item: AddressItem) => {
@@ -238,20 +294,14 @@ export default function CustomerRegistrationModal({
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-[#666666] mb-1">Clase</label>
-                <div className="relative">
-                  <select
-                    className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-100"
-                    value="Gold"
-                    disabled
-                  >
-                    <option value="Gold">Gold</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                      <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                </div>
+                <CustomSelect
+                  ariaLabel="Clase"
+                  value="Gold"
+                  onChange={() => {}}
+                  options={[{ value: 'Gold', label: 'Gold' }]}
+                  placeholder="Gold"
+                  disabled
+                />
               </div>
             </div>
 
@@ -305,39 +355,23 @@ export default function CustomerRegistrationModal({
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block text-[10px] font-bold text-[#666666] mb-1">Provincia <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                      <select defaultValue="Lima" className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors">
-                        <option value="">Seleccione provincia</option>
-                        <option value="Lima">Lima</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                          <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    </div>
+                    <CustomSelect
+                      ariaLabel="Provincia"
+                      value={province}
+                      onChange={setProvince}
+                      options={PROVINCES.map((p) => ({ value: p, label: p }))}
+                      placeholder="Seleccione provincia"
+                    />
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold text-[#666666] mb-1">Distrito <span className="text-red-500">*</span></label>
-                    <div className="relative">
-                      <select
-                        value={district}
-                        onChange={(e) => setDistrict(e.target.value)}
-                        className="w-full appearance-none rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
-                      >
-                        <option value="">Seleccione distrito</option>
-                        {LIMA_DISTRICTS.map((d) => (
-                          <option key={d} value={d}>
-                            {d}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                          <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    </div>
+                    <CustomSelect
+                      ariaLabel="Distrito"
+                      value={district}
+                      onChange={setDistrict}
+                      options={LIMA_DISTRICTS.map((d) => ({ value: d, label: d }))}
+                      placeholder="Seleccione distrito"
+                    />
                   </div>
                 </div>
 
@@ -358,6 +392,7 @@ export default function CustomerRegistrationModal({
                       type="text"
                       value={number}
                       onChange={(e) => handleNumberChange(e.target.value)}
+                      onBlur={handleNumberBlur}
                       placeholder="Nro/Mz"
                       className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                     />
@@ -406,25 +441,38 @@ export default function CustomerRegistrationModal({
                   </button>
                 </div>
 
-                {/* Map search box */}
+                {/* Map search box: value is only ever what the user typed; the
+                    address fields just suggest a query via placeholder so typing
+                    Nro/Mz etc. never overwrites a search the user is composing */}
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={mapSearch}
                     onChange={(e) => setMapSearch(e.target.value)}
-                    placeholder="Buscar en el mapa..."
+                    onKeyDown={handleMapSearchKeyDown}
+                    placeholder={mapSearchSuggestion || 'Buscar en el mapa...'}
                     className="h-7 flex-1 rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 text-[9px] text-[#1a1f5e] focus:outline-none"
                   />
                   <button
                     type="button"
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#1a1f5e] text-white"
+                    onClick={handleMapSearchClick}
+                    disabled={isSearching}
+                    aria-label="Buscar dirección en el mapa"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#1a1f5e] text-white disabled:opacity-60"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="white">
-                      <circle cx="12" cy="12" r="4" />
-                      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
+                    {isSearching ? (
+                      <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="white">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    )}
                   </button>
                 </div>
+                {searchError && (
+                  <p className="-mt-1.5 text-[9px] font-medium text-red-500">{searchError}</p>
+                )}
 
                 {/* Map */}
                 <div
