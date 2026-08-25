@@ -14,7 +14,12 @@ interface CustomSelectProps {
   placeholder: string;
   disabled?: boolean;
   ariaLabel?: string;
+  /** Overrides the trigger's border/radius/padding/font-size/background — layout classes (flex, w-full, text alignment) always apply on top. */
+  triggerClassName?: string;
 }
+
+const DEFAULT_TRIGGER_CLASSNAME =
+  'rounded-lg border-[1.5px] border-[#d0d8f0] bg-white px-2.5 py-[9px] text-xs';
 
 export default function CustomSelect({
   value,
@@ -23,6 +28,7 @@ export default function CustomSelect({
   placeholder,
   disabled,
   ariaLabel,
+  triggerClassName,
 }: CustomSelectProps) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,7 +60,8 @@ export default function CustomSelect({
         aria-expanded={open}
         aria-label={ariaLabel}
         className={clsx(
-          'flex w-full items-center justify-between rounded-lg border-[1.5px] border-[#d0d8f0] bg-white px-2.5 py-[9px] text-left text-xs transition-colors focus:border-[#1a1f5e] focus:outline-none',
+          'flex w-full items-center justify-between text-left transition-colors focus:border-[#1a1f5e] focus:outline-none',
+          triggerClassName || DEFAULT_TRIGGER_CLASSNAME,
           disabled && 'cursor-not-allowed bg-[#f5f5f5]',
           !selectedOption && 'text-slate-400',
         )}

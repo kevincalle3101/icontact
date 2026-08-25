@@ -6,6 +6,7 @@ export interface AddressItem {
   id: string;
   address: string;
   number: string; // Nro/Mz
+  province: string;
   district: string;
   department: string; // Dpto/Interior
   reference: string;

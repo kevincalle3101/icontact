@@ -17,6 +17,9 @@ const PROVINCES = [
   'Junín',
 ];
 
+const SELECT_TRIGGER_CLASSNAME =
+  'rounded-[7px] border-[1.5px] border-[#e0e4f0] bg-[#fafbff] px-[9px] py-[5px] text-[11px]';
+
 export const LIMA_DISTRICTS = [
   'San Isidro',
   'Lima (Cercado)',
@@ -59,12 +62,17 @@ export default function CustomerRegistrationModal({
     customer?.lastName?.split(' ').slice(1).join(' ') || '',
   );
   const [dni, setDni] = useState(customer?.dni || '');
-  const [address, setAddress] = useState(customer?.address || '');
-  const [number, setNumber] = useState(customer?.number || '');
-  const [province, setProvince] = useState('Lima');
-  const [district, setDistrict] = useState(customer?.district || 'San Isidro');
-  const [department, setDepartment] = useState(customer?.department || '');
-  const [reference, setReference] = useState(customer?.reference || '');
+
+  // DIRECCIONES form: this section's purpose is registering a NEW address into
+  // the list below, so it always opens blank — never pre-filled from the
+  // customer's current address. Selecting the ✏️ on a saved row is the only
+  // thing that fills it in (to edit that specific entry).
+  const [address, setAddress] = useState('');
+  const [number, setNumber] = useState('');
+  const [province, setProvince] = useState('');
+  const [district, setDistrict] = useState('');
+  const [department, setDepartment] = useState('');
+  const [reference, setReference] = useState('');
 
   // Map state: mapSearch is only ever set by the user typing their own query —
   // the address/number/district/province fields feed a live *placeholder*
@@ -81,14 +89,23 @@ export default function CustomerRegistrationModal({
     .filter(Boolean)
     .join(', ');
 
+  // Matches the required (*) fields in the Direcciones form: Provincia, Distrito,
+  // Dirección and Dpto/Interior. Nro/Mz and Referencia are optional, so they don't gate this.
+  const isAddressComplete =
+    province.trim() !== '' &&
+    district.trim() !== '' &&
+    address.trim() !== '' &&
+    department.trim() !== '';
+
   // Address selection state
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
-  const [addresses] = useState<AddressItem[]>(
+  const [addresses, setAddresses] = useState<AddressItem[]>(
     customer?.addresses || [
       {
         id: 'addr-1',
         address: customer?.address || 'Avenida Javier Prado Oeste',
         number: customer?.number || '1650',
+        province: 'Lima',
         district: customer?.district || 'San Isidro',
         department: customer?.department || 'Block C',
         reference: customer?.reference || 'CRC AV LAS FLORES',
@@ -97,6 +114,7 @@ export default function CustomerRegistrationModal({
         id: 'addr-2',
         address: 'Av. Conquistadores',
         number: '820',
+        province: 'Lima',
         district: 'San Isidro',
         department: 'Dpto 301',
         reference: 'Cerca a la Huaca Pucllana',
@@ -104,7 +122,7 @@ export default function CustomerRegistrationModal({
     ],
   );
 
-  const [errors, setErrors] = useState<{ department?: string; firstName?: string }>({});
+  const [errors, setErrors] = useState<{ firstName?: string }>({});
 
   useEffect(() => {
     if (customer) {
@@ -114,17 +132,26 @@ export default function CustomerRegistrationModal({
       setPaterno(customer.lastName.split(' ')[0] || '');
       setMaterno(customer.lastName.split(' ').slice(1).join(' '));
       setDni(customer.dni);
-      setAddress(customer.address);
-      setNumber(customer.number || '');
-      setDistrict(customer.district.replace(' - Lima', ''));
-      setDepartment(customer.department);
-      setReference(customer.reference);
     }
   }, [customer]);
 
   const handleAddressChange = (val: string) => setAddress(val);
 
   const handleNumberChange = (val: string) => setNumber(val);
+
+  const resetAddressForm = () => {
+    setSelectedAddressId(null);
+    setAddress('');
+    setNumber('');
+    setProvince('');
+    setDistrict('');
+    setDepartment('');
+    setReference('');
+    setMapSearch('');
+    setSearchError(null);
+    setLat(-12.0464);
+    setLng(-77.0428);
+  };
 
   const runMapSearch = async (query: string) => {
     const trimmed = query.trim();
@@ -169,17 +196,43 @@ export default function CustomerRegistrationModal({
     setSelectedAddressId(item.id);
     setAddress(item.address);
     setNumber(item.number);
+    setProvince(item.province || 'Lima');
     setDistrict(item.district);
     setDepartment(item.department);
     setReference(item.reference);
     setMapSearch(`${item.address} ${item.number}`.trim());
   };
 
-  const handleSaveCustomer = () => {
-    const newErrors: { department?: string; firstName?: string } = {};
-    if (!department.trim()) {
-      newErrors.department = 'El campo Dpto/Interior es obligatorio';
+  // Adds a brand-new entry to Direcciones Registradas, or — when a row's ✏️ was
+  // clicked first (selectedAddressId set) — updates that entry in place instead.
+  const handleSaveAddress = () => {
+    if (!isAddressComplete) return;
+    const savedAddress: AddressItem = {
+      id: selectedAddressId ?? `addr-${Date.now()}`,
+      address,
+      number,
+      province,
+      district,
+      department,
+      reference,
+    };
+    setAddresses((prev) =>
+      selectedAddressId
+        ? prev.map((a) => (a.id === selectedAddressId ? savedAddress : a))
+        : [...prev, savedAddress],
+    );
+    resetAddressForm();
+  };
+
+  const handleDeleteAddress = (id: string) => {
+    setAddresses((prev) => prev.filter((a) => a.id !== id));
+    if (selectedAddressId === id) {
+      resetAddressForm();
     }
+  };
+
+  const handleSaveCustomer = () => {
+    const newErrors: { firstName?: string } = {};
     if (!firstName.trim()) {
       newErrors.firstName = 'Nombres es requerido';
     }
@@ -191,23 +244,7 @@ export default function CustomerRegistrationModal({
 
     setErrors({});
     if (customer) {
-      const updatedAddress = address;
-      const updatedNumber = number;
       const combinedLastName = `${paterno} ${materno}`.trim();
-
-      // Update addresses list if needed
-      const updatedAddresses = addresses.map((addr) =>
-        addr.id === selectedAddressId
-          ? {
-              ...addr,
-              address: updatedAddress,
-              number: updatedNumber,
-              district,
-              department,
-              reference,
-            }
-          : addr,
-      );
 
       onSave({
         id: customer.id,
@@ -216,12 +253,7 @@ export default function CustomerRegistrationModal({
         firstName,
         lastName: combinedLastName,
         dni,
-        address: updatedAddress,
-        number: updatedNumber,
-        district,
-        department,
-        reference,
-        addresses: updatedAddresses,
+        addresses,
       });
     }
     onClose();
@@ -300,13 +332,14 @@ export default function CustomerRegistrationModal({
                   onChange={() => {}}
                   options={[{ value: 'Gold', label: 'Gold' }]}
                   placeholder="Gold"
+                  triggerClassName={SELECT_TRIGGER_CLASSNAME}
                   disabled
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-[#666666] mb-1">Nombres <span className="text-red-500">*</span></label>
+              <label className="block text-[10px] font-bold text-[#666666] mb-1">Nombres <span className="text-[#e01020]">*</span></label>
               <input
                 type="text"
                 value={firstName}
@@ -322,7 +355,7 @@ export default function CustomerRegistrationModal({
 
             <div className="grid grid-cols-2 gap-2.5">
               <div>
-                <label className="block text-[10px] font-bold text-[#666666] mb-1">Apellido Paterno <span className="text-red-500">*</span></label>
+                <label className="block text-[10px] font-bold text-[#666666] mb-1">Apellido Paterno <span className="text-[#e01020]">*</span></label>
                 <input
                   type="text"
                   value={paterno}
@@ -354,30 +387,36 @@ export default function CustomerRegistrationModal({
               <div className="flex flex-col gap-2.5">
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Provincia <span className="text-red-500">*</span></label>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Provincia <span className="text-[#e01020]">*</span></label>
                     <CustomSelect
                       ariaLabel="Provincia"
                       value={province}
-                      onChange={setProvince}
+                      onChange={(v) => {
+                        setProvince(v);
+                        setDistrict('');
+                      }}
                       options={PROVINCES.map((p) => ({ value: p, label: p }))}
                       placeholder="Seleccione provincia"
+                      triggerClassName={SELECT_TRIGGER_CLASSNAME}
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Distrito <span className="text-red-500">*</span></label>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Distrito <span className="text-[#e01020]">*</span></label>
                     <CustomSelect
                       ariaLabel="Distrito"
                       value={district}
                       onChange={setDistrict}
                       options={LIMA_DISTRICTS.map((d) => ({ value: d, label: d }))}
                       placeholder="Seleccione distrito"
+                      triggerClassName={SELECT_TRIGGER_CLASSNAME}
+                      disabled={!province}
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2.5">
                   <div className="col-span-2">
-                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Dirección (Calle / Av.) <span className="text-red-500">*</span></label>
+                    <label className="block text-[10px] font-bold text-[#666666] mb-1">Dirección (Calle / Av.) <span className="text-[#e01020]">*</span></label>
                     <input
                       type="text"
                       value={address}
@@ -400,18 +439,13 @@ export default function CustomerRegistrationModal({
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-[#666666] mb-1">Dpto / Interior <span className="text-red-500">*</span></label>
+                  <label className="block text-[10px] font-bold text-[#666666] mb-1">Dpto / Interior <span className="text-[#e01020]">*</span></label>
                   <input
                     type="text"
                     value={department}
-                    onChange={(e) => {
-                      setDepartment(e.target.value);
-                      if (errors.department) setErrors((prev) => ({ ...prev, department: undefined }));
-                    }}
+                    onChange={(e) => setDepartment(e.target.value)}
                     placeholder="Dpto, piso, interior..."
-                    className={`w-full rounded-lg border px-2.5 py-1.5 text-[11px] font-medium focus:outline-none transition-colors ${
-                      errors.department ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#FAFBFF] focus:border-[#1a1f5e]'
-                    }`}
+                    className="w-full rounded-lg border border-slate-200 bg-[#FAFBFF] px-2.5 py-1.5 text-[11px] font-medium focus:border-[#1a1f5e] focus:outline-none transition-colors"
                   />
                 </div>
 
@@ -501,7 +535,13 @@ export default function CustomerRegistrationModal({
 
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 rounded-lg bg-[#c7d1e0] py-2 text-[10px] font-bold text-white transition-colors hover:bg-[#b1bdcf]"
+                  onClick={handleSaveAddress}
+                  disabled={!isAddressComplete}
+                  className={`flex items-center justify-center gap-2 rounded-lg py-2 text-[10px] font-bold text-white transition-colors ${
+                    isAddressComplete
+                      ? 'bg-[#1a1f5e] hover:bg-[#252b7a]'
+                      : 'cursor-not-allowed bg-[#c7d1e0]'
+                  }`}
                 >
                   💾 Guardar Dirección
                 </button>
@@ -530,17 +570,25 @@ export default function CustomerRegistrationModal({
                     <tr key={item.id} className=" text-[#333333]">
                       <td className="px-4 py-3 font-bold">{item.address} {item.number}</td>
                       <td className="px-4 py-3">{item.district}</td>
-                      <td className="px-4 py-3">Lima</td>
+                      <td className="px-4 py-3">{item.province || 'Lima'}</td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex justify-end gap-2">
                           <button
                             type="button"
                             onClick={() => handleSelectSavedAddress(item)}
+                            aria-label={`Editar dirección ${item.address}`}
                             className="text-amber-500 hover:text-amber-600"
                           >
                             ✏️
                           </button>
-                          <button type="button" className="text-slate-300 hover:text-red-500">🗑️</button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteAddress(item.id)}
+                            aria-label={`Eliminar dirección ${item.address}`}
+                            className="text-slate-300 hover:text-red-500"
+                          >
+                            🗑️
+                          </button>
                         </div>
                       </td>
                     </tr>
