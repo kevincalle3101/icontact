@@ -26,7 +26,8 @@ export interface Customer {
   firstName: string;
   lastName: string;
   dni: string;
-  familyName?: string;
+  familyName?: string; // holds either the Familia or Empresa name, per registrationType
+  registrationType?: 'familia' | 'empresa';
   address: string;
   number?: string; // Nro/Mz
   district: string;

@@ -62,6 +62,20 @@ export default function CustomerRegistrationModal({
     customer?.lastName?.split(' ').slice(1).join(' ') || '',
   );
   const [dni, setDni] = useState(customer?.dni || '');
+  const [regType, setRegType] = useState<'familia' | 'empresa'>(
+    customer?.registrationType || 'familia',
+  );
+  // Kept independent so switching the radio doesn't clobber whichever name
+  // was already typed for the other option — only the one matching
+  // customer.registrationType is restored from the saved data.
+  const [familiaName, setFamiliaName] = useState(
+    customer && customer.registrationType !== 'empresa' ? customer.familyName || '' : '',
+  );
+  const [empresaName, setEmpresaName] = useState(
+    customer?.registrationType === 'empresa' ? customer.familyName || '' : '',
+  );
+  const groupName = regType === 'empresa' ? empresaName : familiaName;
+  const setGroupName = regType === 'empresa' ? setEmpresaName : setFamiliaName;
 
   // DIRECCIONES form: this section's purpose is registering a NEW address into
   // the list below, so it always opens blank — never pre-filled from the
@@ -132,6 +146,12 @@ export default function CustomerRegistrationModal({
       setPaterno(customer.lastName.split(' ')[0] || '');
       setMaterno(customer.lastName.split(' ').slice(1).join(' '));
       setDni(customer.dni);
+      setRegType(customer.registrationType || 'familia');
+      if (customer.registrationType === 'empresa') {
+        setEmpresaName(customer.familyName || '');
+      } else {
+        setFamiliaName(customer.familyName || '');
+      }
     }
   }, [customer]);
 
@@ -255,6 +275,8 @@ export default function CustomerRegistrationModal({
         firstName,
         lastName: combinedLastName,
         dni,
+        familyName: groupName,
+        registrationType: regType,
         addresses,
         ...(activeAddress && {
           address: activeAddress.address,
@@ -612,7 +634,13 @@ export default function CustomerRegistrationModal({
             <h3 className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-3">🏠 TIPO DE REGISTRO</h3>
             <div className="flex gap-3">
               <label className="group flex-1 cursor-pointer">
-                <input type="radio" name="regType" className="hidden peer" defaultChecked />
+                <input
+                  type="radio"
+                  name="regType"
+                  className="hidden peer"
+                  checked={regType === 'familia'}
+                  onChange={() => setRegType('familia')}
+                />
                 <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-100 p-3 text-[12px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
                   <div className="h-4 w-4 rounded-full border-2 border-current flex items-center justify-center">
                     <div className="h-2 w-2 rounded-full bg-current opacity-0 group-has-checked:opacity-100" />
@@ -621,7 +649,13 @@ export default function CustomerRegistrationModal({
                 </div>
               </label>
               <label className="group flex-1 cursor-pointer">
-                <input type="radio" name="regType" className="hidden peer" />
+                <input
+                  type="radio"
+                  name="regType"
+                  className="hidden peer"
+                  checked={regType === 'empresa'}
+                  onChange={() => setRegType('empresa')}
+                />
                 <div className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 p-3 text-[12px] font-bold text-slate-400 transition-all peer-checked:border-[#1a1f5e] peer-checked:text-[#1a1f5e] peer-checked:bg-blue-50/30">
                   <div className="h-4 w-4 rounded-full border-2 border-current flex items-center justify-center">
                     <div className="h-2 w-2 rounded-full bg-current opacity-0 group-has-checked:opacity-100" />
@@ -629,6 +663,18 @@ export default function CustomerRegistrationModal({
                   🏢 Empresa
                 </div>
               </label>
+            </div>
+
+            <div className="mt-4">
+              <label className="mb-[5px] block text-[10px] font-semibold text-[#666666]">
+                {regType === 'empresa' ? 'Nombre del Grupo / Empresa' : 'Nombre de la Familia'}
+              </label>
+              <input
+                type="text"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                className="w-full rounded-[7px] border-[1.5px] border-[#e0e4f0] bg-[#fafbff] px-[9px] py-[5px] text-[11px] outline-none"
+              />
             </div>
           </div>
 

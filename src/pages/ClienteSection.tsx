@@ -224,7 +224,12 @@ export default function ClienteSection() {
                 DNI: <span className="font-bold text-[#2a3449]">{customer?.dni || '72749143'}</span>
               </p>
               <p>
-                Familia: <span className="font-bold text-[#2a3449]">{customer?.familyName || customer?.lastName || 'Gerónimo Llanos'}</span>
+                {customer?.registrationType === 'empresa' ? 'Empresa' : 'Familia'}:{' '}
+                <span className="font-bold text-[#2a3449]">
+                  {customer?.familyName ||
+                    (customer?.registrationType === 'empresa' ? 'No disponible' : customer?.lastName) ||
+                    'Gerónimo Llanos'}
+                </span>
               </p>
             </div>
           </div>
