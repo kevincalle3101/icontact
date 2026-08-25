@@ -267,6 +267,7 @@ export default function ClienteSection() {
                           district: addr.district,
                           department: addr.department,
                           reference: addr.reference,
+                          activeAddressId: addr.id,
                         });
                         setShowAddressDropdown(false);
                       }}
@@ -288,7 +289,7 @@ export default function ClienteSection() {
               Departamento: <span className="font-bold text-[#2a3449]">{customer?.department || 'Block C'}</span>
             </p>
             <p className="truncate">
-              Ref.: <span className="font-bold text-[#2a3449]">{customer?.reference || 'CRC AV LAS FLORES'}</span>
+              Ref.: <span className="font-bold text-[#2a3449]">{customer?.reference || 'No disponible'}</span>
             </p>
           </div>
         </section>

@@ -13,6 +13,7 @@ export const MOCK_CUSTOMER: Customer = {
   district: 'San Isidro',
   department: 'Block C',
   reference: 'CRC AV LAS FLORES',
+  activeAddressId: 'addr-1',
   addresses: [
     {
       id: 'addr-1',

@@ -33,6 +33,7 @@ export interface Customer {
   department: string;
   reference: string;
   addresses?: AddressItem[];
+  activeAddressId?: string; // which entry in `addresses` currently backs address/number/district/department/reference
   relatedClients?: RelatedClient[];
 }
 

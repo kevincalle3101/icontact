@@ -246,6 +246,8 @@ export default function CustomerRegistrationModal({
     if (customer) {
       const combinedLastName = `${paterno} ${materno}`.trim();
 
+      const activeAddress = addresses.find((a) => a.id === customer.activeAddressId);
+
       onSave({
         id: customer.id,
         phone,
@@ -254,6 +256,13 @@ export default function CustomerRegistrationModal({
         lastName: combinedLastName,
         dni,
         addresses,
+        ...(activeAddress && {
+          address: activeAddress.address,
+          number: activeAddress.number,
+          district: activeAddress.district,
+          department: activeAddress.department,
+          reference: activeAddress.reference,
+        }),
       });
     }
     onClose();
