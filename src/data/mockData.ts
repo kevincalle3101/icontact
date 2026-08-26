@@ -138,18 +138,21 @@ export const MOCK_STORE_INFO: StoreInfo = {
   code: 'KF004',
   name: 'LAS FLORES',
   address: 'Av. Las Flores 123, San Isidro',
+  district: 'SAN ISIDRO',
+  department: 'LIMA',
+  reference: 'Cerca a Av. Javier Prado',
 };
 
 export const MOCK_STORES: Store[] = [
   // KFC - LIMA
-  { id: 'kfc-11', code: 'KFC 11', name: 'SAN MIGUEL', brand: 'KFC', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. La Marina 2355, San Miguel' },
-  { id: 'kfc-45', code: 'KFC 45', name: 'SAN MIGUEL PLAZA', brand: 'KFC', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. Universitaria 1801, San Miguel' },
-  { id: 'kfc-03', code: 'KFC 03', name: 'MIRAFLORES', brand: 'KFC', department: 'LIMA', district: 'MIRAFLORES', address: 'Av. José Larco 345, Miraflores' },
-  { id: 'kfc-22', code: 'KFC 22', name: 'LARCO MAR', brand: 'KFC', department: 'LIMA', district: 'MIRAFLORES', address: 'Malecón de la Reserva 610, Miraflores' },
-  { id: 'kfc-07', code: 'KFC 07', name: 'SAN ISIDRO', brand: 'KFC', department: 'LIMA', district: 'SAN ISIDRO', address: 'Av. Javier Prado Oeste 1680, San Isidro' },
+  { id: 'kfc-11', code: 'KFC 11', name: 'SAN MIGUEL', brand: 'KFC', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. La Marina 2355, San Miguel', reference: 'Frente al Parque de las Leyendas' },
+  { id: 'kfc-45', code: 'KFC 45', name: 'SAN MIGUEL PLAZA', brand: 'KFC', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. Universitaria 1801, San Miguel', reference: 'Dentro del Real Plaza San Miguel' },
+  { id: 'kfc-03', code: 'KFC 03', name: 'MIRAFLORES', brand: 'KFC', department: 'LIMA', district: 'MIRAFLORES', address: 'Av. José Larco 345, Miraflores', reference: 'A dos cuadras del Óvalo' },
+  { id: 'kfc-22', code: 'KFC 22', name: 'LARCO MAR', brand: 'KFC', department: 'LIMA', district: 'MIRAFLORES', address: 'Malecón de la Reserva 610, Miraflores', reference: 'Dentro del centro comercial Larcomar' },
+  { id: 'kfc-07', code: 'KFC 07', name: 'SAN ISIDRO', brand: 'KFC', department: 'LIMA', district: 'SAN ISIDRO', address: 'Av. Javier Prado Oeste 1680, San Isidro', reference: 'Cerca al Real Plaza Salaverry' },
   // KFC - AREQUIPA
-  { id: 'kfc-31', code: 'KFC 31', name: 'CAYMA', brand: 'KFC', department: 'AREQUIPA', district: 'CAYMA', address: 'Av. Ejército 610, Cayma' },
-  { id: 'kfc-32', code: 'KFC 32', name: 'CERCADO', brand: 'KFC', department: 'AREQUIPA', district: 'CERCADO', address: 'Portal de Flores 130, Cercado' },
+  { id: 'kfc-31', code: 'KFC 31', name: 'CAYMA', brand: 'KFC', department: 'AREQUIPA', district: 'CAYMA', address: 'Av. Ejército 610, Cayma', reference: 'Frente a la Plaza de Cayma' },
+  { id: 'kfc-32', code: 'KFC 32', name: 'CERCADO', brand: 'KFC', department: 'AREQUIPA', district: 'CERCADO', address: 'Portal de Flores 130, Cercado', reference: 'A media cuadra de la Plaza de Armas' },
 
   // Chilis - LIMA
   { id: 'chi-01', code: 'CHI 01', name: 'SAN MIGUEL', brand: 'Chilis', department: 'LIMA', district: 'SAN MIGUEL', address: 'Av. La Marina 2000, San Miguel' },

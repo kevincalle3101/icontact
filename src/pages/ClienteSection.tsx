@@ -26,9 +26,16 @@ export default function ClienteSection() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPickupModalOpen, setIsPickupModalOpen] = useState(false);
+  // Tracks whether a store has actually been confirmed for the current pickup
+  // session — reopening the modal to change stores must NOT flip Card 2 back to
+  // the customer's address; only switching to Delivery (or cancelling before any
+  // store was ever confirmed) should do that.
+  const [hasConfirmedPickupStore, setHasConfirmedPickupStore] = useState(false);
   const [viewingOrder, setViewingOrder] = useState<OrderHistoryItem | null>(null);
   const [phoneInput, setPhoneInput] = useState(customer?.phone || '970220065');
   const [showAddressDropdown, setShowAddressDropdown] = useState(false);
+
+  const isPickup = deliveryChannel === 'pickup' && hasConfirmedPickupStore;
   const [showClientDropdown, setShowClientDropdown] = useState(false);
   const addressDropdownRef = useRef<HTMLDivElement>(null);
   const clientDropdownRef = useRef<HTMLDivElement>(null);
@@ -97,15 +104,33 @@ export default function ClienteSection() {
   const handleDeliveryChannelChange = (channel: DeliveryChannel) => {
     dispatch(setDeliveryChannel(channel));
     setIsPickupModalOpen(channel === 'pickup');
+    if (channel === 'delivery') {
+      setHasConfirmedPickupStore(false);
+    }
   };
 
   const handleCancelPickup = () => {
-    dispatch(setDeliveryChannel('delivery'));
+    // Only bail back to Delivery if no store was ever confirmed this session —
+    // reopening the modal to change an already-confirmed store and then
+    // cancelling should just close it, keeping the existing pickup store.
+    if (!hasConfirmedPickupStore) {
+      dispatch(setDeliveryChannel('delivery'));
+    }
     setIsPickupModalOpen(false);
   };
 
   const handleConfirmStore = (store: Store) => {
-    dispatch(setStoreInfo({ code: store.code, name: store.name, address: store.address }));
+    dispatch(
+      setStoreInfo({
+        code: store.code,
+        name: store.name,
+        address: store.address,
+        district: store.district,
+        department: store.department,
+        reference: store.reference,
+      }),
+    );
+    setHasConfirmedPickupStore(true);
     setIsPickupModalOpen(false);
   };
 
@@ -235,68 +260,94 @@ export default function ClienteSection() {
           </div>
         </section>
 
-        {/* Card 2: DIRECCIÓN DE ENTREGA */}
+        {/* Card 2: DIRECCIÓN DE ENTREGA (becomes DIRECCIÓN DE TIENDA for pickup) */}
         <section className="rounded-2xl border border-slate-200/90 bg-white p-3 shadow-2xs">
           <h2 className="mb-2 text-[11px] font-bold uppercase tracking-wide text-[#7b869d]">
-            DIRECCIÓN DE ENTREGA
+            {isPickup ? 'DIRECCIÓN DE TIENDA' : 'DIRECCIÓN DE ENTREGA'}
           </h2>
 
-          <div className="relative mb-2" ref={addressDropdownRef}>
-            <button
-              type="button"
-              onClick={() => setShowAddressDropdown((v) => !v)}
-              className="flex w-full items-center justify-between font-bold text-left text-[11px] bg-transparent py-0.5"
-            >
-              <div className="flex items-center gap-1.5 truncate">
-                <span className="text-red-600 text-xs shrink-0">📍</span>
-                <span className="truncate font-extrabold text-black">
-                  {customer
-                    ? `${customer.address} ${customer.number || ''}`.trim()
-                    : 'Avenida Javier Prado Oeste 1650'}
+          {isPickup ? (
+            // Pickup has no delivery address — the customer collects the order at
+            // the chosen store, so this card shows that store instead.
+            <div className="flex flex-col gap-1">
+              <div className="mb-0.5 flex items-start gap-1.5">
+                <span className="mt-px shrink-0 text-[11px]">📍</span>
+                <span className="text-[11px] font-bold leading-tight text-[#333333]">
+                  {storeInfo.address}
                 </span>
               </div>
-              <span className="text-[#1a1f5e] text-[9px] ml-1 shrink-0">▼</span>
-            </button>
+              <div className="flex flex-col gap-0.5 text-[10px] text-[#888888]">
+                <span>
+                  Distrito: <span className="font-semibold text-[#444444]">{storeInfo.district || 'No disponible'}</span>
+                </span>
+                <span>
+                  Departamento: <span className="font-semibold text-[#444444]">{storeInfo.department || 'No disponible'}</span>
+                </span>
+                <span>
+                  Ref.: <span className="font-semibold text-[#444444]">{storeInfo.reference || 'No disponible'}</span>
+                </span>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="relative mb-2" ref={addressDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setShowAddressDropdown((v) => !v)}
+                  className="flex w-full items-center justify-between font-bold text-left text-[11px] bg-transparent py-0.5"
+                >
+                  <div className="flex items-center gap-1.5 truncate">
+                    <span className="text-red-600 text-xs shrink-0">📍</span>
+                    <span className="truncate font-extrabold text-black">
+                      {customer
+                        ? `${customer.address} ${customer.number || ''}`.trim()
+                        : 'Avenida Javier Prado Oeste 1650'}
+                    </span>
+                  </div>
+                  <span className="text-[#1a1f5e] text-[9px] ml-1 shrink-0">▼</span>
+                </button>
 
-            {showAddressDropdown && customer?.addresses && customer.addresses.length > 0 && (
-              <ul className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg text-xs">
-                {customer.addresses.map((addr) => (
-                  <li key={addr.id}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleSave({
-                          id: customer.id,
-                          address: addr.address,
-                          number: addr.number,
-                          district: addr.district,
-                          department: addr.department,
-                          reference: addr.reference,
-                          activeAddressId: addr.id,
-                        });
-                        setShowAddressDropdown(false);
-                      }}
-                      className="w-full px-3 py-1.5 text-left hover:bg-slate-100 font-medium text-slate-700"
-                    >
-                      {addr.address} {addr.number} ({addr.district})
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+                {showAddressDropdown && customer?.addresses && customer.addresses.length > 0 && (
+                  <ul className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg text-xs">
+                    {customer.addresses.map((addr) => (
+                      <li key={addr.id}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleSave({
+                              id: customer.id,
+                              address: addr.address,
+                              number: addr.number,
+                              district: addr.district,
+                              department: addr.department,
+                              reference: addr.reference,
+                              activeAddressId: addr.id,
+                            });
+                            setShowAddressDropdown(false);
+                          }}
+                          className="w-full px-3 py-1.5 text-left hover:bg-slate-100 font-medium text-slate-700"
+                        >
+                          {addr.address} {addr.number} ({addr.district})
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
-          <div className="flex flex-col gap-1 text-[10px] text-[#7e8aa2] font-medium leading-tight">
-            <p>
-              Distrito: <span className="font-bold text-[#2a3449]">{customer?.district || 'San Isidro'}</span>
-            </p>
-            <p>
-              Departamento: <span className="font-bold text-[#2a3449]">{customer?.department || 'Block C'}</span>
-            </p>
-            <p className="truncate">
-              Ref.: <span className="font-bold text-[#2a3449]">{customer?.reference || 'No disponible'}</span>
-            </p>
-          </div>
+              <div className="flex flex-col gap-1 text-[10px] text-[#7e8aa2] font-medium leading-tight">
+                <p>
+                  Distrito: <span className="font-bold text-[#2a3449]">{customer?.district || 'San Isidro'}</span>
+                </p>
+                <p>
+                  Departamento: <span className="font-bold text-[#2a3449]">{customer?.department || 'Block C'}</span>
+                </p>
+                <p className="truncate">
+                  Ref.: <span className="font-bold text-[#2a3449]">{customer?.reference || 'No disponible'}</span>
+                </p>
+              </div>
+            </>
+          )}
         </section>
 
         {/* Card 3: CANAL DE VENTA */}

@@ -141,6 +141,9 @@ export interface StoreInfo {
   code: string;
   name: string;
   address: string;
+  district?: string;
+  department?: string;
+  reference?: string;
 }
 
 export interface Store {
@@ -151,6 +154,7 @@ export interface Store {
   department: string;
   district: string;
   address: string;
+  reference?: string;
 }
 
 export interface ApiState {
