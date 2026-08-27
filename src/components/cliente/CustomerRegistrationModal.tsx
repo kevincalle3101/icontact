@@ -65,17 +65,12 @@ export default function CustomerRegistrationModal({
   const [regType, setRegType] = useState<'familia' | 'empresa'>(
     customer?.registrationType || 'familia',
   );
-  // Kept independent so switching the radio doesn't clobber whichever name
-  // was already typed for the other option — only the one matching
-  // customer.registrationType is restored from the saved data.
-  const [familiaName, setFamiliaName] = useState(
-    customer && customer.registrationType !== 'empresa' ? customer.familyName || '' : '',
-  );
+  // Only Empresa has its own typed name field. Familia has no field at all —
+  // its "group name" is just Apellido Paterno from Datos del Cliente above.
   const [empresaName, setEmpresaName] = useState(
     customer?.registrationType === 'empresa' ? customer.familyName || '' : '',
   );
-  const groupName = regType === 'empresa' ? empresaName : familiaName;
-  const setGroupName = regType === 'empresa' ? setEmpresaName : setFamiliaName;
+  const groupName = regType === 'empresa' ? empresaName : `${paterno} ${materno}`.trim();
 
   // DIRECCIONES form: this section's purpose is registering a NEW address into
   // the list below, so it always opens blank — never pre-filled from the
@@ -149,8 +144,6 @@ export default function CustomerRegistrationModal({
       setRegType(customer.registrationType || 'familia');
       if (customer.registrationType === 'empresa') {
         setEmpresaName(customer.familyName || '');
-      } else {
-        setFamiliaName(customer.familyName || '');
       }
     }
   }, [customer]);
@@ -665,17 +658,21 @@ export default function CustomerRegistrationModal({
               </label>
             </div>
 
-            <div className="mt-4">
-              <label className="mb-[5px] block text-[10px] font-semibold text-[#666666]">
-                {regType === 'empresa' ? 'Nombre del Grupo / Empresa' : 'Nombre de la Familia'}
-              </label>
-              <input
-                type="text"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                className="w-full rounded-[7px] border-[1.5px] border-[#e0e4f0] bg-[#fafbff] px-[9px] py-[5px] text-[11px] outline-none"
-              />
-            </div>
+            {/* Only Empresa gets a field — Familia has no field at all, its
+                group name is just Apellido Paterno from Datos del Cliente. */}
+            {regType === 'empresa' && (
+              <div className="mt-4">
+                <label className="mb-[5px] block text-[10px] font-semibold text-[#666666]">
+                  Nombre del Grupo / Empresa
+                </label>
+                <input
+                  type="text"
+                  value={empresaName}
+                  onChange={(e) => setEmpresaName(e.target.value)}
+                  className="w-full rounded-[7px] border-[1.5px] border-[#e0e4f0] bg-[#fafbff] px-[9px] py-[5px] text-[11px] outline-none"
+                />
+              </div>
+            )}
           </div>
 
           {/* Actualizar Cliente */}
