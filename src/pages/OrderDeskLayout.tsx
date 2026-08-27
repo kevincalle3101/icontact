@@ -30,22 +30,24 @@ export default function OrderDeskLayout() {
       {/* Column 3: Sections 4 (Resumen) & 5 (Pago) inside a single card, buttons sticky at bottom */}
       <div className="h-full flex flex-col overflow-hidden">
         <section className="flex flex-col flex-1 min-h-0 bg-white shadow-2xs">
-          <div className="flex items-center justify-between px-3 pt-3 pb-2 shrink-0">
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.8px] text-[#8892b0]">
-              4. Resumen Pedido
-            </h2>
-            <button
-              type="button"
-              onClick={handleClearCart}
-              disabled={items.length === 0}
-              className="text-[14px] text-[#bbbbbb] hover:text-red-600 disabled:opacity-40 transition-colors"
-              title="Limpiar carrito"
-              aria-label="Limpiar carrito"
-            >
-              🗑
-            </button>
-          </div>
+          {/* Header scrolls away with the rest of the content — only the
+              CONTINUAR bar at the bottom stays pinned. */}
           <div className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">
+            <div className="flex items-center justify-between pt-3 pb-2">
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.8px] text-[#8892b0]">
+                4. Resumen Pedido
+              </h2>
+              <button
+                type="button"
+                onClick={handleClearCart}
+                disabled={items.length === 0}
+                className="text-[14px] text-[#bbbbbb] hover:text-red-600 disabled:opacity-40 transition-colors"
+                title="Limpiar carrito"
+                aria-label="Limpiar carrito"
+              >
+                🗑
+              </button>
+            </div>
             <ResumenSection embedded />
             <PagoSection embedded />
           </div>
