@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiCheckCircle } from 'react-icons/fi';
 import SectionContainer from '@/components/shared/SectionContainer';
 import PaymentMethod from '@/components/pago/PaymentMethod';
 import AmountInput from '@/components/pago/AmountInput';
@@ -26,6 +25,17 @@ interface PagoSectionProps {
   embedded?: boolean;
 }
 
+function formatEtaClock(minutesFromNow: number): string {
+  const eta = new Date(Date.now() + minutesFromNow * 60000);
+  const hours24 = eta.getHours();
+  const minutes = eta.getMinutes().toString().padStart(2, '0');
+  const period = hours24 >= 12 ? 'p. m.' : 'a. m.';
+  const hours12 = hours24 % 12 || 12;
+  return `${hours12}:${minutes} ${period}`;
+}
+
+const DELIVERY_ETA_MINUTES = 40;
+
 export default function PagoSection({ embedded = false }: PagoSectionProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -33,6 +43,7 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
   const subtotal = useAppSelector(selectCartSubtotal);
   const payment = useAppSelector((state) => state.ui.payment);
   const exchangeRate = useAppSelector((state) => state.exchangeRate.rate);
+  const { customer, deliveryChannel, storeInfo } = useAppSelector((state) => state.customer);
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
@@ -77,6 +88,25 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
     setValue('name', payment.name);
     setValue('driverObservation', payment.driverObservation);
   }, [payment.dni, payment.name, payment.driverObservation, setValue]);
+
+  // Gates CONTINUAR: needs an amount to pay, a DNI/CE or RUC, and at least one
+  // character for the name — matches the disabled state in OrderDeskLayout's
+  // pinned button, which reads the same three fields from Redux.
+  const dniValue = watch('dni') || '';
+  const nameValue = watch('name') || '';
+  const canContinue =
+    items.length > 0 && payment.amount > 0 && dniValue.trim() !== '' && nameValue.trim() !== '';
+
+  // Keeps Redux's dni/name live as the user types (not just on submit) — the
+  // CONTINUAR button lives outside this component (in OrderDeskLayout, pinned
+  // at the bottom of the panel) and needs these to compute its disabled state.
+  useEffect(() => {
+    const subscription = watch((values, { name: fieldName }) => {
+      if (fieldName === 'dni') dispatch(setPaymentField({ field: 'dni', value: values.dni || '' }));
+      if (fieldName === 'name') dispatch(setPaymentField({ field: 'name', value: values.name || '' }));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, dispatch]);
 
   // Handle Amount change & USD Pop-up requirement
   const handleAmountChange = (newAmount: number) => {
@@ -171,9 +201,9 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
       <div className="mt-2 flex flex-col items-center gap-2">
         <button
           type="submit"
-          disabled={items.length === 0}
+          disabled={!canContinue}
           className={`w-full rounded-xl py-3 text-[14px] font-bold uppercase tracking-wider transition-colors ${
-            items.length === 0
+            !canContinue
               ? 'bg-[#c8d6e5] text-white cursor-not-allowed'
               : 'bg-[#1a1f5e] text-white shadow-sm hover:bg-[#252b7a]'
           }`}
@@ -227,60 +257,94 @@ export default function PagoSection({ embedded = false }: PagoSectionProps) {
         </SectionContainer>
       )}
 
-      {/* Confirmation Modal (Sección Mensaje de Despedida) */}
+      {/* Confirmation Modal: Mensaje de Despedida */}
       {showConfirmationModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl flex flex-col items-center text-center">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-              <FiCheckCircle size={28} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="flex max-h-[88vh] w-full max-w-[500px] flex-col overflow-hidden rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+            <div className="shrink-0 bg-[#0a0e2e] px-6 py-4 text-center">
+              <span className="text-[15px] font-extrabold tracking-[1px] text-white">
+                MENSAJE DE DESPEDIDA
+              </span>
             </div>
-            <h3 className="text-[13px] font-bold text-slate-900 uppercase">
-              ¡Pedido Listo para Confirmar!
-            </h3>
-            <p className="mt-1 text-[10px] text-slate-500">
-              Revise el resumen final del pedido antes de enviar a cocina.
-            </p>
 
-            <div className="my-4 w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-700 flex flex-col gap-1.5">
-              <div className="flex justify-between">
-                <span>Cliente:</span>
-                <span className="font-bold">{payment.name}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>DNI / RUC:</span>
-                <span className="font-bold">{payment.dni}</span>
-              </div>
-              <div className="flex justify-between border-t border-slate-200 pt-1.5">
-                <span>Subtotal:</span>
-                <span>S/ {subtotal.toFixed(2)}</span>
-              </div>
-              {payment.managerDiscountApplied && (
-                <div className="flex justify-between text-blue-700 font-semibold">
-                  <span>Descuento Gerencial (10%):</span>
-                  <span>- S/ {discountAmount.toFixed(2)}</span>
+            <div className="flex-1 overflow-y-auto">
+              <div className="px-6 pt-4">
+                <div className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.6px] text-[#8892b0]">
+                  Detalle del pedido
                 </div>
-              )}
-              {/* Requirement: "El campo Total muestra el Total de la Sección Detalle del pedido, no el Subtotal" */}
-              <div className="flex justify-between border-t border-slate-200 pt-1.5 font-bold text-sm text-slate-900">
-                <span>Total Final:</span>
-                <span>S/ {total.toFixed(2)}</span>
+
+                {items.map((item) => (
+                  <div
+                    key={item.productId}
+                    className="mb-2.5 border-b border-[#f5f6fa] pb-2.5"
+                  >
+                    <div className="mb-1 flex justify-between text-[12px] font-bold text-[#1a1f5e]">
+                      <span>
+                        {item.quantity}x {item.emoji} {item.name}
+                      </span>
+                      <span>S/ {(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                    {item.options?.map((group, gIdx) => (
+                      <div key={gIdx} className="pl-2.5">
+                        <div className="text-[10px] font-bold text-[#666666]">{group.category}</div>
+                        {group.items.map((opt, oIdx) => (
+                          <div key={oIdx} className="pl-2 text-[10px] text-[#888888]">
+                            • {opt}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+
+                <div className="flex justify-between pb-3.5">
+                  <span className="text-[15px] font-extrabold text-[#1a1f5e]">TOTAL</span>
+                  <span className="text-[15px] font-extrabold text-[#1a1f5e]">
+                    S/ {total.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="border-y border-[#eef0f8] bg-[#f8f9fc] px-6 py-3.5">
+                <p className="text-center text-[13px] leading-[1.8] text-[#333333]">
+                  {deliveryChannel === 'pickup' ? (
+                    <>
+                      Estimado cliente, su pedido estará listo para recoger en{' '}
+                      <strong className="text-[#1a1f5e]">{storeInfo.name}</strong>. Estará listo en{' '}
+                      <strong className="text-[14px] text-[#e01020]">{DELIVERY_ETA_MINUTES} minutos</strong>{' '}
+                      (a las {formatEtaClock(DELIVERY_ETA_MINUTES)}). Le avisaremos si hay algún
+                      inconveniente.
+                    </>
+                  ) : (
+                    <>
+                      Estimado cliente, su pedido se enviará a{' '}
+                      <strong className="text-[#1a1f5e]">
+                        {`${customer?.address || ''} ${customer?.number || ''}`.trim()}
+                      </strong>
+                      . Llegará en{' '}
+                      <strong className="text-[14px] text-[#e01020]">{DELIVERY_ETA_MINUTES} minutos</strong>{' '}
+                      (a las {formatEtaClock(DELIVERY_ETA_MINUTES)}). El driver se comunicará con
+                      usted.
+                    </>
+                  )}
+                </p>
               </div>
             </div>
 
-            <div className="flex w-full gap-3">
-              <button
-                type="button"
-                onClick={() => setShowConfirmationModal(false)}
-                className="flex-1 rounded-xl border border-slate-300 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100"
-              >
-                Modificar
-              </button>
+            <div className="shrink-0 border-t border-[#eef0f8] px-6 py-3.5">
               <button
                 type="button"
                 onClick={handleFinishOrder}
-                className="flex-1 rounded-xl bg-[#0f172a] py-2.5 text-xs font-bold text-white hover:bg-slate-800 shadow-sm"
+                className="w-full rounded-[10px] bg-[#1a3ff5] py-[13px] text-[14px] font-extrabold tracking-[0.8px] text-white transition-colors hover:bg-[#1636d6]"
               >
-                Confirmar y Enviar
+                OK — ENVIAR PEDIDO
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowConfirmationModal(false)}
+                className="mt-[7px] w-full p-[3px] text-[12px] text-[#999999] hover:text-[#666666]"
+              >
+                ← Regresar
               </button>
             </div>
           </div>

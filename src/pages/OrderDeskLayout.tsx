@@ -9,10 +9,20 @@ import { clearCart, selectCartItems } from '@/store/slices/cartSlice';
 export default function OrderDeskLayout() {
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartItems);
+  const payment = useAppSelector((state) => state.ui.payment);
 
   const handleClearCart = () => {
     dispatch(clearCart());
   };
+
+  // Mirrors PagoSection's canContinue — Redux's payment.dni/name are kept live
+  // (synced on every keystroke, not just on submit) specifically so this
+  // button, which lives outside PagoSection, can gate on them too.
+  const canContinue =
+    items.length > 0 &&
+    payment.amount > 0 &&
+    payment.dni.trim() !== '' &&
+    payment.name.trim() !== '';
 
   return (
     <div className="hidden h-full gap-3 lg:grid lg:grid-cols-[279px_1fr_350px] items-start overflow-hidden">
@@ -56,9 +66,9 @@ export default function OrderDeskLayout() {
             <button
               type="submit"
               form="pago-form"
-              disabled={items.length === 0}
+              disabled={!canContinue}
               className={`w-full rounded-xl py-3 text-[14px] font-bold uppercase tracking-wider transition-colors ${
-                items.length === 0
+                !canContinue
                   ? 'bg-[#c8d6e5] text-white cursor-not-allowed'
                   : 'bg-[#1a1f5e] text-white shadow-sm hover:bg-[#252b7a]'
               }`}
